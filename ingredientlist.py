@@ -15,9 +15,12 @@ class Trans:
         self.toMexican = toMexican
         self.fromMexican = fromMexican
 
+ingdict={}
 
-milk = Ingredient(Trans(None, None, "almond milk", None, "almond milk", "cream", None, None), "animal product")
-template = Ingredient(Trans(None, None, None, None, None, None, None, None))
+aproductop1= Ingredient(Trans(None, None, "almond milk", None, "almond milk", "cream", None, None), "animal product")
+ingdict["milk"] = aproductop1
+
+templateop= Ingredient(Trans(None, None, None, None, None, None, None, None), "j")
 
 
 
