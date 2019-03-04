@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Ingredient:
     def __init__(self, trans, categoryName):
         self.trans = trans
@@ -23,5 +25,9 @@ ingdict["milk"] = aproductop1
 templateop= Ingredient(Trans(None, None, None, None, None, None, None, None), "j")
 
 
-
+# determine the type of an ingredient
+def getIngredientType(ingredient):
+    df = pd.read_csv('FOOD_DES.csv')
+    filteredDF = df[df['Shrt_Desc'].str.contains(ingredient, case=False)]
+    return filteredDF['FdGrp_Cd'].value_counts().idxmax()
 
