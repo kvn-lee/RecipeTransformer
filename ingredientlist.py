@@ -31,3 +31,7 @@ def getIngredientType(ingredient):
     filteredDF = df[df['Shrt_Desc'].str.contains(ingredient, case=False)]
     return filteredDF['FdGrp_Cd'].value_counts().idxmax()
 
+
+if __name__ == "__main__":
+    a=getIndegredientType('chicken')
+    print(a)
