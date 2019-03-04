@@ -32,6 +32,19 @@ def getIngredientType(ingredient):
     return filteredDF['FdGrp_Cd'].value_counts().idxmax()
 
 
+# generate formatted ingredient name
+def generateIngredientName(desc):
+    desc = desc.lower()
+    name = desc.split(',')
+    name = name[0:2]
+    name = name[::-1]
+    name = ' '.join(name)
+    return name.lstrip()
+
+
 if __name__ == "__main__":
-    a=getIndegredientType('chicken')
+    a = getIngredientType("chicken")
     print(a)
+    desc = "Cheese, cottage, lowfat, 1% milkfat"
+    n = generateIngredientName(desc)
+    print(n)
