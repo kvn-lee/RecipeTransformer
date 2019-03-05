@@ -42,6 +42,7 @@ def generateIngredientName(desc):
     return name.lstrip()
 
 
+
 if __name__ == "__main__":
     a = getIngredientType("chicken")
     print(a)

@@ -26,6 +26,7 @@ def parseIngredients(url):
             items.append(
                 str(item2.find(class_="recipe-ingred_txt added").get_text()))
 
+    print(items)
     return items
 
 
@@ -45,4 +46,9 @@ def parseDirections(url):
         steps.append(
             str(step.find(class_="recipe-directions__list--item").get_text().rstrip()))
 
+    print(steps)
     return steps
+
+if __name__ == "__main__":
+    items = parseIngredients("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
+    steps = parseDirections("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
