@@ -84,8 +84,4 @@ def getIngredientComponents(ingredients):
 if __name__ == "__main__":
     items = parseIngredients("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
     steps = parseDirections("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
-<<<<<<< HEAD
-    components = getIngredientComponents(items)
-=======
-    components = getIngredientComponents(items)
->>>>>>> efb09e8b0cb0bd217227cec6a7bd8b65f4a2af12
+
