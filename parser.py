@@ -1,6 +1,12 @@
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+import re
+
+num = re.compile(r"(?x)(?:(?:\d+\s*)? \d+\/\d+|\d+(?:\.\d+)? )")
+unit_words = ["teaspoon", "tablespoon", "fluid ounce", "gill", "cup", "quart", "pint", "gallon", "milliliter",
+              "liter", "decileter", "pound", "pack", "pinch", "dash", "ounce", "package", "container", "tub"]
+units = re.compile("|".join(r"\b{}s?\b".format(u) for u in unit_words), re.I)
 
 
 def parseIngredients(url):
@@ -49,6 +55,17 @@ def parseDirections(url):
     print(steps)
     return steps
 
+
+def getIngredientComponents(ingredients):
+    ingredient_components = {}
+    for ingredient in ingredients:
+        ingredient_components[ingredient] = {"quantity": next(iter(num.findall(ingredient)), None),
+                                             "unit": next(iter(units.findall(ingredient)), None)}
+    print(ingredient_components)
+    return ingredient_components
+
+
 if __name__ == "__main__":
     items = parseIngredients("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
     steps = parseDirections("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
+    components = getIngredientComponents(items)
