@@ -1,6 +1,13 @@
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+import re
+
+num = re.compile(r"(?x)(?:(?:\d+\s*)? \d+\/\d+|\d+(?:\.\d+)? )")
+unit_words = ["teaspoon", "tablespoon", "fluid ounce", "gill", "cup", "quart", "pint", "gallon", "milliliter",
+              "liter", "deciliter", "pound", "pack", "pinch", "dash", "ounce", "package", "container", "tub", "can",
+              "stalk"]
+units = re.compile("|".join(r"\b{}s?\b".format(u) for u in unit_words), re.I)
 
 
 def parseIngredients(url):
@@ -26,6 +33,7 @@ def parseIngredients(url):
             items.append(
                 str(item2.find(class_="recipe-ingred_txt added").get_text()))
 
+    print(items)
     return items
 
 
@@ -45,4 +53,35 @@ def parseDirections(url):
         steps.append(
             str(step.find(class_="recipe-directions__list--item").get_text().rstrip()))
 
+    print(steps)
     return steps
+
+
+def getIngredientComponents(ingredients):
+    ingredient_components = {}
+    for ingredient in ingredients:
+        quantity = next(iter(num.findall(ingredient)), None)
+        unit = next(iter(units.findall(ingredient)), None)
+        ing_name = ""
+        if quantity is None:
+            ing_name = ingredient
+        elif unit is None:
+            ing_name = ingredient.split(quantity, 1)[1]
+        elif unit is not None:
+            ing_name = ingredient.split(unit, 1)[1]
+        ing_name = ing_name.lstrip().rstrip()
+        ing_name = ing_name.replace(" - ", ",")
+        ing_name, sep, description = ing_name.partition(",")
+        description = description.lstrip()
+        ingredient_components[ingredient] = {"quantity": quantity,
+                                             "unit": unit,
+                                             "name": ing_name,
+                                             "description": description}
+    print(ingredient_components)
+    return ingredient_components
+
+
+if __name__ == "__main__":
+    items = parseIngredients("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
+    steps = parseDirections("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
+    components = getIngredientComponents(items)
