@@ -5,7 +5,8 @@ import re
 
 num = re.compile(r"(?x)(?:(?:\d+\s*)? \d+\/\d+|\d+(?:\.\d+)? )")
 unit_words = ["teaspoon", "tablespoon", "fluid ounce", "gill", "cup", "quart", "pint", "gallon", "milliliter",
-              "liter", "decileter", "pound", "pack", "pinch", "dash", "ounce", "package", "container", "tub"]
+              "liter", "deciliter", "pound", "pack", "pinch", "dash", "ounce", "package", "container", "tub", "can",
+              "stalk"]
 units = re.compile("|".join(r"\b{}s?\b".format(u) for u in unit_words), re.I)
 
 
@@ -59,8 +60,23 @@ def parseDirections(url):
 def getIngredientComponents(ingredients):
     ingredient_components = {}
     for ingredient in ingredients:
-        ingredient_components[ingredient] = {"quantity": next(iter(num.findall(ingredient)), None),
-                                             "unit": next(iter(units.findall(ingredient)), None)}
+        quantity = next(iter(num.findall(ingredient)), None)
+        unit = next(iter(units.findall(ingredient)), None)
+        ing_name = ""
+        if quantity is None:
+            ing_name = ingredient
+        elif unit is None:
+            ing_name = ingredient.split(quantity, 1)[1]
+        elif unit is not None:
+            ing_name = ingredient.split(unit, 1)[1]
+        ing_name = ing_name.lstrip().rstrip()
+        ing_name = ing_name.replace(" - ", ",")
+        ing_name, sep, description = ing_name.partition(",")
+        description = description.lstrip()
+        ingredient_components[ingredient] = {"quantity": quantity,
+                                             "unit": unit,
+                                             "name": ing_name,
+                                             "description": description}
     print(ingredient_components)
     return ingredient_components
 
