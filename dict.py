@@ -1,17 +1,17 @@
 import pandas as pd
 import csv
 
-class Ingredient:
-    def __init__(self, group, prop):
-        self.group = group
-        self.property = prop
-
 df = pd.read_csv('FOOD_DES.csv')
 
 master_dict = {}
 
-for group in df['FdGrp_Cd']:
-    if group not in master_dict:
-        master_dict[group] = []
+for desc in df['Long_Desc']:
+    desc = desc.lower()
+    prod = desc.split(',')
+    if prod[0] in master_dict:
+        for item in prod[1:]:
+            master_dict[prod[0]].append(item[1:])
+    else:
+        master_dict[prod[0]] = prod[2:]
 
-item = []
+print(master_dict)
