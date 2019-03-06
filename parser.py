@@ -29,7 +29,6 @@ def parseIngredients(url):
     print(items)
     return items
 
-
 def parseDirections(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
