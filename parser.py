@@ -68,6 +68,7 @@ def getIngredientComponents(ingredients):
         quantity = next(iter(num.findall(ingredient)), None)
         unit = next(iter(units.findall(ingredient)), None)
         preparation = next(iter(prep.findall(ingredient)), None)
+
         ing_name = ""
         if quantity is None:
             ing_name = ingredient
@@ -77,18 +78,19 @@ def getIngredientComponents(ingredients):
             ing_name = ingredient.split(unit, 1)[1]
         if preparation and preparation in ing_name and ing_name.startswith(preparation):
             ing_name = ing_name.split(preparation, 1)[1]
+
         ing_name = ing_name.lstrip().rstrip()
         ing_name = ing_name.replace(" - ", ",")
         ing_name = ing_name.replace(" to ", ", to ")
         ing_name = ing_name.replace(" for ", ", for ")
         ing_name, sep, description = ing_name.partition(",")
         description = description.lstrip()
-        if unit: unit = unit.rstrip()
         ingredient_components[original_ingredient] = {"quantity": quantity,
                                                       "unit": unit,
                                                       "name": ing_name,
                                                       "description": description,
                                                       "prep": preparation}
+
     print(ingredient_components)
     return ingredient_components
 
