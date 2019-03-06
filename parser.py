@@ -6,8 +6,11 @@ import re
 num = re.compile(r"(?x)(?:(?:\d+\s*)? \d+\/\d+|\d+(?:\.\d+)? )")
 unit_words = ["teaspoon", "tablespoon", "fluid ounce", "gill", "cup", "quart", "pint", "gallon", "milliliter",
               "liter", "deciliter", "pound", "pack", "pinch", "dash", "ounce", "package", "container", "tub", "can",
-              "stalk"]
-units = re.compile("|".join(r"\b{}s?\b".format(u) for u in unit_words), re.I)
+              "stalk", "clove"]
+units = re.compile("|".join(r"\b{}s? \b".format(u) for u in unit_words), re.I)
+prep_words = ["crushed", "minced", "diced", "cubed", "julienned", "stripped", "sliced", "cracked", "chopped",
+              "prepared", "fresh", "grated", "skinless", "boneless", "shucked", "ground"]
+prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
 
 
 def parseIngredients(url):
@@ -60,8 +63,11 @@ def parseDirections(url):
 def getIngredientComponents(ingredients):
     ingredient_components = {}
     for ingredient in ingredients:
+        original_ingredient = ingredient
+        ingredient = re.sub(r'\([^)]*\)', '', ingredient)
         quantity = next(iter(num.findall(ingredient)), None)
         unit = next(iter(units.findall(ingredient)), None)
+        preparation = next(iter(prep.findall(ingredient)), None)
         ing_name = ""
         if quantity is None:
             ing_name = ingredient
@@ -69,14 +75,20 @@ def getIngredientComponents(ingredients):
             ing_name = ingredient.split(quantity, 1)[1]
         elif unit is not None:
             ing_name = ingredient.split(unit, 1)[1]
+        if preparation and preparation in ing_name and ing_name.startswith(preparation):
+            ing_name = ing_name.split(preparation, 1)[1]
         ing_name = ing_name.lstrip().rstrip()
         ing_name = ing_name.replace(" - ", ",")
+        ing_name = ing_name.replace(" to ", ", to ")
+        ing_name = ing_name.replace(" for ", ", for ")
         ing_name, sep, description = ing_name.partition(",")
         description = description.lstrip()
-        ingredient_components[ingredient] = {"quantity": quantity,
-                                             "unit": unit,
-                                             "name": ing_name,
-                                             "description": description}
+        if unit: unit = unit.rstrip()
+        ingredient_components[original_ingredient] = {"quantity": quantity,
+                                                      "unit": unit,
+                                                      "name": ing_name,
+                                                      "description": description,
+                                                      "prep": preparation}
     print(ingredient_components)
     return ingredient_components
 
@@ -84,4 +96,5 @@ def getIngredientComponents(ingredients):
 if __name__ == "__main__":
     items = parseIngredients("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
     steps = parseDirections("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
-
+    components = getIngredientComponents(items)
+    a = 1
