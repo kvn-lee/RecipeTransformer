@@ -97,8 +97,6 @@ transformdict['mayonnaise'] = Ingredient(Trans(None, None, None, None, None, 'bu
 #Soups, Sauces, and Gravies
 #broth vs soup
 
-#Breakfast Cereals should be okay
-
 #Fruits and Fruit Juices are okay? maybe append fresh for healthy?
 
 #Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
@@ -148,6 +146,7 @@ transformdict['cookie'] = 'Baked Products'
 
 #Sweets- for healthy reduce them by ratio, for unhealthy increase them
 #Snacks- for healthy reduce them by ratio, for unhealthy increase them
+#Breakfast Cereals ^^
 
 #add ingredients like sugar, baking soda, etc?
 
