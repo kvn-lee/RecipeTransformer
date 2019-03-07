@@ -78,12 +78,78 @@ transformdict['crustaceans'] = {'crab': Ingredient(Trans('jackfruit', None, 'jac
 transformdict['mollusks'] = Ingredient(Trans('king oyster mushrooms', None, 'king oyster mushrooms', None, None, None, None, None), 'Finfish and Shellfish Products')
 transformdict['salmon'] = Ingredient(Trans('tofu', None, 'tofu', None, None, None, None, None), 'Finfish and Shellfish Products')
 
-
 ##Lamb, Veal, and Game Products
 transformdict['lamb'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Lamb, Veal, and Game Products')
 transformdict['veal'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Lamb, Veal, and Game Products')
 
+#Fats and Oils
+transformdict['shortening'] = Ingredient(Trans('vegetable shortening', None, 'vegetable shortening', None, 'vegetable shortening', None, None, None), 'Fats and Oils')
+transformdict['oil'] = Ingredient(Trans(None, None, None, None, 'canola oil', 'palm oil', None, None), 'Fats and Oils')
+transformdict['margarine'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
+transformdict['fat'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
+transformdict['fish oil'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
+transformdict['margarine-like'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
+transformdict['mayonnaise'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
 
+###Spices and Herbs ## to Mexican only
+
+
+#Soups, Sauces, and Gravies
+#broth vs soup
+
+#Breakfast Cereals should be okay
+
+#Fruits and Fruit Juices are okay? maybe append fresh for healthy?
+
+#Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
+
+#Nut and Seed Products are okay?
+
+#Beverages
+transformdict['carbonated beverage'] = Ingredient(Trans(None, None, None, None, 'remove', None, None, None), 'Beverages')
+
+
+##add rule if original recipe has ingredients with "meatless", "vegan", "vegetarian" remove to make unvegetarian/unvegan
+#Legumes and Legume Products okay?
+transformdict['peanut butter'] = Ingredient(Trans(None, None, None, None, 'almond butter', None, None, None), 'Legumes and Legume Products')
+transformdict['tofu'] = Ingredient(Trans(None, 'beef', None, 'beef', None, 'beef', None, None), 'Legumes and Legume Products')
+
+#Cereal Grains and Pasta
+transformdict['flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
+transformdict['rice'] = Ingredient(Trans(None, None, None, None, 'brown rice', 'white rice', None, None), 'Cereal Grains and Pasta')
+transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
+transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'quinoa pasta', 'white flour', None, None), 'Cereal Grains and Pasta')
+
+#snacks- okay?
+
+def makeBakedProductsVegan(name):
+    return 'vegan' + name
+
+#Baked Products/// for these add an append vegan function?
+transformdict['biscuits'] = 'Baked Products'
+transformdict['cake'] = 'Baked Products'
+transformdict['coffeecake'] = 'Baked Products'
+transformdict['cake'] = 'Baked Products'
+transformdict['cookies'] = 'Baked Products'
+transformdict['cream puffs'] = 'Baked Products'
+transformdict['croissants'] = 'Baked Products'
+transformdict['danish pastry'] = 'Baked Products'
+transformdict['eclairs'] = 'Baked Products'
+transformdict['english muffins'] = 'Baked Products'
+transformdict['french toast'] = 'Baked Products'
+transformdict['muffins'] = 'Baked Products'
+transformdict['pancakes'] = 'Baked Products'
+transformdict['pie'] = 'Baked Products'
+transformdict['pie crust'] = 'Baked Products'
+transformdict['rolls'] = 'Baked Products'
+transformdict['waffles'] = 'Baked Products'
+transformdict['bread'] = 'Baked Products'
+transformdict['cookie'] = 'Baked Products'
+
+#Sweets- for healthy reduce them by ratio, for unhealthy increase them
+#Snacks- for healthy reduce them by ratio, for unhealthy increase them
+
+#add ingredients like sugar, baking soda, etc?
 
 #templateop= Ingredient(Trans(None, None, None, None, None, None, None, None), 'j')
 
@@ -103,6 +169,8 @@ def generateIngredientName(desc):
     name = name[::-1]
     name = ' '.join(name)
     return name.lstrip()
+
+
 
 if __name__ == "__main__":
     a = getIngredientType("chicken")
