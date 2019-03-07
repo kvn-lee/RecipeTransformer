@@ -13,13 +13,7 @@ prep_words = ["crushed", "minced", "diced", "cubed", "julienned", "stripped", "s
 prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
 
 
-def parseIngredients(url):
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-
-    dish = soup.find(id="recipe-main-content").get_text()
-    print("Parsing the ingredients necessary for " + dish)
-
+def parseIngredients(soup):
     page_list1 = soup.find(id="lst_ingredients_1")
     page_list2 = soup.find(id="lst_ingredients_2")
     check_list1 = page_list1.find_all(class_="checkList__line")
@@ -39,13 +33,8 @@ def parseIngredients(url):
     print(items)
     return items
 
-def parseDirections(url):
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
 
-    dish = soup.find(id="recipe-main-content").get_text()
-    print("Parsing the directions necessary for " + dish)
-
+def parseDirections(soup):
     pg_list = soup.find(class_="list-numbers recipe-directions__list")
     dir_list = pg_list.find_all(class_="step")
 
@@ -94,8 +83,19 @@ def getIngredientComponents(ingredients):
     return ingredient_components
 
 
+def parseRecipe(url):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    dish = soup.find(id="recipe-main-content").get_text()
+    print("Parsing the directions necessary for " + dish)
+
+    ing = parseIngredients(soup)
+    directions = parseDirections(soup)
+
+    return dish, ing, directions
+
+
 if __name__ == "__main__":
-    items = parseIngredients("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
-    steps = parseDirections("https://www.allrecipes.com/recipe/12719/new-orleans-shrimp/?internalSource=rotd&referringContentType=Homepage&clickId=cardslot%201")
-    components = getIngredientComponents(items)
-    a = 1
+    title, ing, directions = parseRecipe("https://www.allrecipes.com/recipe/12719")
+    components = getIngredientComponents(ing)
