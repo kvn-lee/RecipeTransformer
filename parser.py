@@ -2,15 +2,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import re
-
-num = re.compile(r"(?x)(?:(?:\d+\s*)? \d+\/\d+|\d+(?:\.\d+)? )")
-unit_words = ["teaspoon", "tablespoon", "fluid ounce", "gill", "cup", "quart", "pint", "gallon", "milliliter",
-              "liter", "deciliter", "pound", "pack", "pinch", "dash", "ounce", "package", "container", "tub", "can",
-              "stalk", "clove"]
-units = re.compile("|".join(r"\b{}s? \b".format(u) for u in unit_words), re.I)
-prep_words = ["crushed", "minced", "diced", "cubed", "julienned", "stripped", "sliced", "cracked", "chopped",
-              "prepared", "fresh", "grated", "skinless", "boneless", "shucked", "ground"]
-prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
+import regex
 
 
 def parseIngredients(soup):
@@ -53,9 +45,9 @@ def getIngredientComponents(ingredients):
     for ingredient in ingredients:
         original_ingredient = ingredient
         ingredient = re.sub(r'\([^)]*\)', '', ingredient)
-        quantity = next(iter(num.findall(ingredient)), None)
-        unit = next(iter(units.findall(ingredient)), None)
-        preparation = next(iter(prep.findall(ingredient)), None)
+        quantity = next(iter(regex.num.findall(ingredient)), None)
+        unit = next(iter(regex.units.findall(ingredient)), None)
+        preparation = next(iter(regex.prep.findall(ingredient)), None)
 
         ing_name = ""
         if quantity is None:
