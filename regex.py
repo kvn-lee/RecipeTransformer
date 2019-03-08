@@ -13,7 +13,7 @@ unit_words = [
     "pack", "pinch", "dash",
     "ounce", "package", "container",
     "tub", "can", "stalk",
-    "clove"
+    "clove", "bunch"
     ]
 
 units = re.compile("|".join(r"\b{}s? \b".format(u) for u in unit_words), re.I)
@@ -37,8 +37,14 @@ cooking_actions = [
     "bake", "boil", "fry",
     "deep fry", "sauté",
     "saute", "stir-fry", "grill",
-    "roast", "simmer", "steam"
-    "stew", "smoke",
+    "roast", "simmer", "steam",
+    "stew", "smoke", "deep fried",
+    "broil", "fried", "cook"
     ]
 
-cook = re.compile("|".join(r"\b{}\b".format(c) for c in cooking_actions), re.I)
+cook = re.compile("|".join(r"\b{}i?e?d?\b".format(c) for c in cooking_actions), re.I)
+
+
+if __name__ == '__main__':
+    a = cook.findall("broiled")
+    b = 1
