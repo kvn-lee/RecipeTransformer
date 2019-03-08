@@ -17,6 +17,8 @@ for item in df['Long_Desc']:
     name.lstrip()
     if not prod[0] in master_dict:
         master_dict[prod[0]] = [prod[0], df['FdGrp_Cd'][count].lower()]
+    if not prod[1] in master_dict:
+        master_dict[prod[1]] = [prod[1], 'unknown']
     master_dict[name]= [prod[0], df['FdGrp_Cd'][count].lower()]
     count = count + 1 
 
@@ -31,7 +33,7 @@ for item in df['Long_Desc']:
     else:
         master_dict[prod[0]] = prod[2:]
 '''
-print(master_dict)
+#print(master_dict)
 
 
 

@@ -1,4 +1,5 @@
 import pandas as pd
+import fooddict
 
 class Ingredient:
     def __init__(self, trans, categoryName):
@@ -20,6 +21,25 @@ class Trans:
 ingdict={}
 transformdict={}
 
+def ingredienttodict(name):
+    if name in fooddict.master_dict:
+        return name
+    ## add addtional matching later
+
+def dicttotrans(name, trans, orignalname):
+    entry = fooddict.master_dict[name]
+    grouping = entry[0] #example, milk
+    maincategory = entry[1] #ex baking products
+    if grouping in transops:
+        transops = transformdict[grouping]
+        if type(transops) is dict: 
+            if transops[name - grouping] in transops:
+                name.replace(grouping, "")
+                transops = transops[name]
+            else:
+                transops = transops['else']
+        return transops.trans
+    if maincategory == 
 
 
 ###Dairy and egg products
@@ -53,7 +73,7 @@ transformdict['pheasant'] = Ingredient(Trans('seitan', None, 'seitan', None, Non
 transformdict['quail'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Poultry Products')
 transformdict['turkey'] = Ingredient(Trans('tofu', None, 'tofu', None, None, None, None, None), 'Poultry Products')
 
-##Sausages and Luncheon Meats
+##Sausages and Luncheon Meats// add healthy
 transformdict['bologna'] = Ingredient(Trans('meatless bologna', None, 'meatless bologna', None, None, None, None, None), 'Sausages and Luncheon Meats')
 transformdict['bratwurst'] = Ingredient(Trans('vegan beer brats', None, 'vegan beer brats', None, None, None, None, None), 'Sausages and Luncheon Meats')
 transformdict['frankfurter'] = Ingredient(Trans('vegan beer brats', None, 'vegan beer brats', None, None, None, None, None), 'Sausages and Luncheon Meats')
@@ -98,6 +118,7 @@ transformdict['mayonnaise'] = Ingredient(Trans(None, None, None, None, None, 'bu
 #broth vs soup
 
 #Fruits and Fruit Juices are okay? maybe append fresh for healthy?
+transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh' , 'canned' , None, None), 'Fruits and Fruit Juices')
 
 #Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
 
@@ -118,40 +139,21 @@ transformdict['rice'] = Ingredient(Trans(None, None, None, None, 'brown rice', '
 transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
 transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'quinoa pasta', 'white flour', None, None), 'Cereal Grains and Pasta')
 
-#snacks- okay?
+#Baked Products/// for these add an append vegan function?
+transformdict['baked products'] = Ingredient(Trans(None, None, 'vegan', None, 'sugar-free', None, None, None), 'Baked Products')
+
+#Sweets- for healthy reduce them by ratio, for unhealthy increase them
+transformdict['sweets'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Sweets')
+transformdict['honey'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Sweets')
+
+#Snacks- for healthy reduce them by ratio, for unhealthy increase them
+transformdict['snacks'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Snacks')
+
+#Breakfast Cereals ^^
+transformdict['breakfast cereals'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Breakfast Cereals')
 
 def makeBakedProductsVegan(name):
     return 'vegan' + name
-
-#Baked Products/// for these add an append vegan function?
-transformdict['biscuits'] = 'Baked Products'
-transformdict['cake'] = 'Baked Products'
-transformdict['coffeecake'] = 'Baked Products'
-transformdict['cake'] = 'Baked Products'
-transformdict['cookies'] = 'Baked Products'
-transformdict['cream puffs'] = 'Baked Products'
-transformdict['croissants'] = 'Baked Products'
-transformdict['danish pastry'] = 'Baked Products'
-transformdict['eclairs'] = 'Baked Products'
-transformdict['english muffins'] = 'Baked Products'
-transformdict['french toast'] = 'Baked Products'
-transformdict['muffins'] = 'Baked Products'
-transformdict['pancakes'] = 'Baked Products'
-transformdict['pie'] = 'Baked Products'
-transformdict['pie crust'] = 'Baked Products'
-transformdict['rolls'] = 'Baked Products'
-transformdict['waffles'] = 'Baked Products'
-transformdict['bread'] = 'Baked Products'
-transformdict['cookie'] = 'Baked Products'
-
-#Sweets- for healthy reduce them by ratio, for unhealthy increase them
-#Snacks- for healthy reduce them by ratio, for unhealthy increase them
-#Breakfast Cereals ^^
-
-#add ingredients like sugar, baking soda, etc?
-
-#templateop= Ingredient(Trans(None, None, None, None, None, None, None, None), 'j')
-
 
 # determine the type of an ingredient
 def getIngredientType(ingredient):
