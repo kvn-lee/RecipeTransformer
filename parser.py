@@ -32,8 +32,10 @@ def parse_directions(soup):
     steps = []
 
     for step in dir_list:
-        steps.append(
-            str(step.find(class_="recipe-directions__list--item").get_text().rstrip().lower()))
+        step_text = str(step.find(class_="recipe-directions__list--item").get_text())
+        individual_steps = re.split(r'(?<=[^A-Z].[.?]) +(?=[A-Z])', step_text)
+        individual_steps = [s.strip() for s in individual_steps]
+        steps.extend(individual_steps)
 
     print(steps)
     return steps
@@ -52,9 +54,9 @@ def get_ingredient_components(ingredients):
         if quantity is None:
             ing_name = ingredient
         elif unit is None:
-            ing_name = ingredient.split(quantity, 1)[1]
+            ing_name = ingredient.split(quantity, 1)[1].strip()
         elif unit is not None:
-            ing_name = ingredient.split(unit, 1)[1]
+            ing_name = ingredient.split(unit, 1)[1].strip()
         if preparation and preparation in ing_name and ing_name.startswith(preparation):
             ing_name = ing_name.split(preparation, 1)[1]
 
@@ -87,21 +89,24 @@ def get_direction_components(directions, ingredients):
         dir_ingredients = []
         #individual_directions = re.split(r'(?<=[^A-Z].[.?]) +(?=[A-Z])', dir)
 
-        duration = next(iter(regex.time.findall(dir)), None)
+        #duration = next(iter(regex.time.findall(dir)), None)
+        duration = regex.time.findall(dir)
         if duration:
             if isinstance(duration, list):
                 time.extend(duration)
             else:
                 time.append(duration)
 
-        cooking_methods = next(iter(regex.cook.findall(dir)), None)
+        #cooking_methods = next(iter(regex.cook.findall(dir)), None)
+        cooking_methods = regex.cook.findall(dir)
         if cooking_methods:
             if isinstance(cooking_methods, list):
                 methods.extend(cooking_methods)
             else:
                 methods.append(cooking_methods)
 
-        cooking_tools = next(iter(regex.tools.findall(dir)), None)
+        #cooking_tools = next(iter(regex.tools.findall(dir)), None)
+        cooking_tools = regex.tools.findall(dir)
         if cooking_tools:
             if isinstance(cooking_tools, list):
                 tools.extend(cooking_tools)
@@ -116,7 +121,7 @@ def get_direction_components(directions, ingredients):
         if "stir" in tools:
             tools = [tool.replace("stir", "wooden spoon") for tool in tools]
 
-        dir_components = {"ingredients": dir_ingredients, "methods": methods, "tools": tools, "time": time}
+        dir_components = {"direction": dir, "ingredients": dir_ingredients, "methods": methods, "tools": tools, "time": time}
         direction_components.append(dir_components)
 
     return direction_components

@@ -26,7 +26,8 @@ prep_words = [
     "sliced", "cracked", "chopped",
     "prepared", "fresh", "grated",
     "skinless", "boneless", "shucked",
-    "ground", "melted", "boned"
+    "ground", "melted", "boned",
+    "large", "all-purpose"
     ]
 
 prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
@@ -40,6 +41,7 @@ cooking_actions = [
     "roast", "simmer", "steam",
     "stew", "smoke", "deep fried",
     "broil", "fried", "cook",
+    "melt", "heat"
     ]
 
 cook = re.compile("|".join(r"\b{}i?e?d?\b".format(c) for c in cooking_actions), re.I)
