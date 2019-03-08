@@ -83,6 +83,7 @@ def get_direction_components(directions, ingredients):
     for dir in directions:
         time = []
         methods = []
+        tools = []
         dir_ingredients = []
         #individual_directions = re.split(r'(?<=[^A-Z].[.?]) +(?=[A-Z])', dir)
 
@@ -100,12 +101,22 @@ def get_direction_components(directions, ingredients):
             else:
                 methods.append(cooking_methods)
 
+        cooking_tools = next(iter(regex.tools.findall(dir)), None)
+        if cooking_tools:
+            if isinstance(cooking_tools, list):
+                tools.extend(cooking_tools)
+            else:
+                tools.append(cooking_tools)
+
         for ing in ingredients:
             ing_search = re.search(ing, dir)
             if ing_search:
                 dir_ingredients.append(ing)
 
-        dir_components = {"time": time, "methods": methods, "ingredients": dir_ingredients}
+        if "stir" in tools:
+            tools = [tool.replace("stir", "wooden spoon") for tool in tools]
+
+        dir_components = {"ingredients": dir_ingredients, "methods": methods, "tools": tools, "time": time}
         direction_components.append(dir_components)
 
     return direction_components

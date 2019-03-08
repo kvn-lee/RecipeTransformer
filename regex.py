@@ -45,6 +45,17 @@ cooking_actions = [
 cook = re.compile("|".join(r"\b{}i?e?d?\b".format(c) for c in cooking_actions), re.I)
 
 
+# generate regex for cooking tools
+cooking_tools = [
+    "pan", "bowl", "skillet",
+    "whisk", "oven", "griddle",
+    "pressure cooker", "frying pan",
+    "stir"
+    ]
+
+tools = re.compile("|".join(r"\b{}\b".format(t) for t in cooking_tools), re.I)
+
+
 # regex for time and time unit
 time = re.compile(r"\d*[.,]?\d* minu?t?e?s?|\d*[.,]?\d* hours?")
 
