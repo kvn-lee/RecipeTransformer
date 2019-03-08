@@ -6,6 +6,14 @@ class Ingredient:
         self.trans = trans
         self.categoryName = categoryName
 
+class TransSteps:
+    ##keep refers to merely replacing ingredient names, not removing original instructions
+    ##ie replacing margarine with butter
+    ##steps- if keep is True steps can be added for example to add additional steps (like mixing the two 
+    # ingredients that replace one). If keep is false this is used to replace original steps
+    def __init__(self, keep, steps):
+        self.keep = keep
+        self.steps = steps
 
 class Trans:
     def __init__(self, toVegetarian, fromVegetarian, toVegan, fromVegan, toHealthy, fromHealthy, toMexican, fromMexican):
@@ -20,27 +28,38 @@ class Trans:
 
 ingdict={}
 transformdict={}
+transinstructions={}
 
+##returns the best name that matches the dictionary for the ingredient
 def ingredienttodict(name):
     if name in fooddict.master_dict:
         return name
     ## add addtional matching later
 
-def dicttotrans(name, trans, orignalname):
+def dicttotrans(name, trans, originalname):
     entry = fooddict.master_dict[name]
     grouping = entry[0] #example, milk
     maincategory = entry[1] #ex baking products
+    #check if sub category is in dictionary
     if grouping in transops:
         transops = transformdict[grouping]
         if type(transops) is dict: 
-            if transops[name - grouping] in transops:
-                name.replace(grouping, "")
+            name.replace(grouping, "").strip()
+            if transops[name] in transops:
                 transops = transops[name]
             else:
                 transops = transops['else']
-        return transops.trans
-    if maincategory == 
+    elif maincategory in transops:
+        transops = transformdict[maincategory]
+    else: return None
+    return transops.trans
 
+def translate(trans):
+    if trans == None:
+        #do nothing    
+    elif trans == 'spice':
+        spicedict() ## change this later
+    else transinstructions[trans]
 
 ###Dairy and egg products
 transformdict['butter'] = Ingredient(Trans(None, None, 'margarine', None, 'margarine', None, None, None), 'Dairy and Egg Products')
@@ -116,9 +135,12 @@ transformdict['mayonnaise'] = Ingredient(Trans(None, None, None, None, None, 'bu
 
 #Soups, Sauces, and Gravies
 #broth vs soup
+transformdict['v2Soups, Sauces, and Gravies'] = Ingredient(Trans(None, None, None, None, 'low-sodium+', 'high-sodium+' , None, None), 'v2Soups, Sauces, and Gravies')
+transformdict['v1Soups, Sauces, and Gravies'] = Ingredient(Trans(None, '+with beef', 'vegan vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'v1Soups, Sauces, and Gravies')
+transformdict['v2Soups, Sauces, and Gravies'] = Ingredient(Trans('cream of mushroom', None, 'vegetable broth', None, 'low-sodium', 'high-sodium' , None, None), 'Soups, Sauces, and Gravies')
 
 #Fruits and Fruit Juices are okay? maybe append fresh for healthy?
-transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh' , 'canned' , None, None), 'Fruits and Fruit Juices')
+transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
 
 #Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
 
@@ -140,7 +162,7 @@ transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'whole w
 transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'quinoa pasta', 'white flour', None, None), 'Cereal Grains and Pasta')
 
 #Baked Products/// for these add an append vegan function?
-transformdict['baked products'] = Ingredient(Trans(None, None, 'vegan', None, 'sugar-free', None, None, None), 'Baked Products')
+transformdict['baked products'] = Ingredient(Trans(None, None, 'vegan+', None, 'sugar-free+', None, None, None), 'Baked Products')
 
 #Sweets- for healthy reduce them by ratio, for unhealthy increase them
 transformdict['sweets'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Sweets')
@@ -171,6 +193,8 @@ def generateIngredientName(desc):
     name = ' '.join(name)
     return name.lstrip()
 
+#dictionary of subsitution steps
+transinstructions[]
 
 
 if __name__ == "__main__":
