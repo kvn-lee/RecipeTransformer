@@ -4,7 +4,7 @@ import re
 num = re.compile(r"(?x)(?:(?:\d+\s*)? \d+\/\d+|\d+(?:\.\d+)? )")
 
 
-# generate regex for units
+# generate regex for units of measurement
 unit_words = [
     "teaspoon", "tablespoon", "fluid ounce",
     "gill", "cup", "quart",
@@ -16,7 +16,7 @@ unit_words = [
     "clove", "bunch"
     ]
 
-units = re.compile("|".join(r"\b{}s? \b".format(u) for u in unit_words), re.I)
+units = re.compile("|".join(r"\b{}s?\b".format(u) for u in unit_words), re.I)
 
 
 # generate regex for preparation words
@@ -39,12 +39,16 @@ cooking_actions = [
     "saute", "stir-fry", "grill",
     "roast", "simmer", "steam",
     "stew", "smoke", "deep fried",
-    "broil", "fried", "cook"
+    "broil", "fried", "cook",
     ]
 
 cook = re.compile("|".join(r"\b{}i?e?d?\b".format(c) for c in cooking_actions), re.I)
 
 
+# regex for time and time unit
+time = re.compile(r"\d*[.,]?\d* minu?t?e?s?|\d*[.,]?\d* hours?")
+
+
 if __name__ == '__main__':
-    a = cook.findall("broiled")
+    a = time.findall("2 hours")
     b = 1

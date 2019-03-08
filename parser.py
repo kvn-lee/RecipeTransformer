@@ -40,7 +40,7 @@ def parse_directions(soup):
 
 
 def get_ingredient_components(ingredients):
-    ingredient_components = {}
+    ingredient_components = []
     for ingredient in ingredients:
         original_ingredient = ingredient
         ingredient = re.sub(r'\([^)]*\)', '', ingredient)
@@ -58,20 +58,57 @@ def get_ingredient_components(ingredients):
         if preparation and preparation in ing_name and ing_name.startswith(preparation):
             ing_name = ing_name.split(preparation, 1)[1]
 
-        ing_name = ing_name.lstrip().rstrip()
+        ing_name = ing_name.strip()
         ing_name = ing_name.replace(" - ", ",")
         ing_name = ing_name.replace(" to ", ", to ")
         ing_name = ing_name.replace(" for ", ", for ")
         ing_name, sep, description = ing_name.partition(",")
-        description = description.lstrip()
-        ingredient_components[original_ingredient] = {"quantity": quantity,
-                                                      "unit": unit,
-                                                      "name": ing_name,
-                                                      "description": description,
-                                                      "prep": preparation}
+        description = description.strip()
+        ing_props = {
+            "original": original_ingredient,
+            "quantity": quantity,
+            "unit": unit,
+            "name": ing_name,
+            "description": description,
+            "prep": preparation
+             }
+        ingredient_components.append(ing_props)
 
     print(ingredient_components)
     return ingredient_components
+
+
+def get_direction_components(directions, ingredients):
+    direction_components = []
+    for dir in directions:
+        time = []
+        methods = []
+        dir_ingredients = []
+        #individual_directions = re.split(r'(?<=[^A-Z].[.?]) +(?=[A-Z])', dir)
+
+        duration = next(iter(regex.time.findall(dir)), None)
+        if duration:
+            if isinstance(duration, list):
+                time.extend(duration)
+            else:
+                time.append(duration)
+
+        cooking_methods = next(iter(regex.cook.findall(dir)), None)
+        if cooking_methods:
+            if isinstance(cooking_methods, list):
+                methods.extend(cooking_methods)
+            else:
+                methods.append(cooking_methods)
+
+        for ing in ingredients:
+            ing_search = re.search(ing, dir)
+            if ing_search:
+                dir_ingredients.append(ing)
+
+        dir_components = {"time": time, "methods": methods, "ingredients": dir_ingredients}
+        direction_components.append(dir_components)
+
+    return direction_components
 
 
 def parse_cooking_method(title, directions):
@@ -118,6 +155,8 @@ def parse_recipe(url):
 
 if __name__ == "__main__":
     title, ing, directions = parse_recipe("https://www.allrecipes.com/recipe/12719")
-    components = get_ingredient_components(ing)
+    ing_components = get_ingredient_components(ing)
+    ing_names = [d['name'] for d in ing_components if 'name' in d]
+    dir_components = get_direction_components(directions, ing_names)
     main_cooking_method = parse_cooking_method(title, directions)
     print(main_cooking_method)
