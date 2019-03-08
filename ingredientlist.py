@@ -112,9 +112,11 @@ transformdict['margarine-like'] = Ingredient(Trans(None, None, None, None, None,
 transformdict['mayonnaise'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
 
 ###Spices and Herbs ## to Mexican only
-
+transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, ["garlic", "oregano", "cilantro", "epazote"], None), 'Spices and Herbs')
+transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"], None), 'Spices and Herbs')
 
 #Soups, Sauces, and Gravies
+transformdict['sauces'] = Ingredient(Trans(None, None, None, None, None, None, ["salsa verde", "salsa roja"], None), 'Fats and Oils')
 #broth vs soup
 
 #Fruits and Fruit Juices are okay? maybe append fresh for healthy?
