@@ -2,29 +2,29 @@ import pandas as pd
 import fooddict
 
 class Ingredient:
-    def __init__(self, trans, categoryName):
-        self.trans = trans
-        self.categoryName = categoryName
+   def __init__(self, trans, categoryName):
+       self.trans = trans
+       self.categoryName = categoryName
 
 class TransSteps:
-    ##keep refers to merely replacing ingredient names, not removing original instructions
-    ##ie replacing margarine with butter
-    ##steps- if keep is True steps can be added for example to add additional steps (like mixing the two 
-    # ingredients that replace one). If keep is false this is used to replace original steps
-    def __init__(self, keep, steps):
-        self.keep = keep
-        self.steps = steps
+   ##keep refers to merely replacing ingredient names, not removing original instructions
+   ##ie replacing margarine with butter
+   ##steps- if keep is True steps can be added for example to add additional steps (like mixing the two
+   # ingredients that replace one). If keep is false this is used to replace original steps
+   def __init__(self, keep, steps):
+       self.keep = keep
+       self.steps = steps
 
 class Trans:
-    def __init__(self, toVegetarian, fromVegetarian, toVegan, fromVegan, toHealthy, fromHealthy, toMexican, fromMexican):
-        self.toVegetarian = toVegetarian
-        self.fromVegetarian = fromVegetarian
-        self.toVegan = toVegan
-        self.fromVegan = fromVegan
-        self.toHealthy = toHealthy
-        self.fromHealthy = fromHealthy
-        self.toMexican = toMexican
-        self.fromMexican = fromMexican
+   def __init__(self, toVegetarian, fromVegetarian, toVegan, fromVegan, toHealthy, fromHealthy, toMexican, fromMexican):
+       self.toVegetarian = toVegetarian
+       self.fromVegetarian = fromVegetarian
+       self.toVegan = toVegan
+       self.fromVegan = fromVegan
+       self.toHealthy = toHealthy
+       self.fromHealthy = fromHealthy
+       self.toMexican = toMexican
+       self.fromMexican = fromMexican
 
 ingdict={}
 transformdict={}
@@ -32,34 +32,36 @@ transinstructions={}
 
 ##returns the best name that matches the dictionary for the ingredient
 def ingredienttodict(name):
-    if name in fooddict.master_dict:
-        return name
-    ## add addtional matching later
+   if name in fooddict.master_dict:
+       return name
+   ## add addtional matching later
 
 def dicttotrans(name, trans, originalname):
-    entry = fooddict.master_dict[name]
-    grouping = entry[0] #example, milk
-    maincategory = entry[1] #ex baking products
-    #check if sub category is in dictionary
-    if grouping in transops:
-        transops = transformdict[grouping]
-        if type(transops) is dict: 
-            name.replace(grouping, "").strip()
-            if transops[name] in transops:
-                transops = transops[name]
-            else:
-                transops = transops['else']
-    elif maincategory in transops:
-        transops = transformdict[maincategory]
-    else: return None
-    return transops.trans
+   entry = fooddict.master_dict[name]
+   grouping = entry[0] #example, milk
+   maincategory = entry[1] #ex baking products
+   #check if sub category is in dictionary
+   if grouping in transops:
+       transops = transformdict[grouping]
+       if type(transops) is dict:
+           name.replace(grouping, "").strip()
+           if transops[name] in transops:
+               transops = transops[name]
+           else:
+               transops = transops['else']
+   elif maincategory in transops:
+       transops = transformdict[maincategory]
+   else: return None
+   return transops.trans
 
 def translate(trans):
-    if trans == None:
-        #do nothing    
-    elif trans == 'spice':
-        spicedict() ## change this later
-    else transinstructions[trans]
+   if trans == None:
+       #do nothing   
+   elif trans == 'spice':
+       spicedict() ## change this later
+   #if it starts or ends with a + add the words
+   elif trans == 'remove'
+   else transinstructions[trans]
 
 ###Dairy and egg products
 transformdict['butter'] = Ingredient(Trans(None, None, 'margarine', None, 'margarine', None, None, None), 'Dairy and Egg Products')
@@ -121,29 +123,32 @@ transformdict['salmon'] = Ingredient(Trans('tofu', None, 'tofu', None, None, Non
 transformdict['lamb'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Lamb, Veal, and Game Products')
 transformdict['veal'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Lamb, Veal, and Game Products')
 
-#Fats and Oils
+#Fats and Oils  ##COMPLETE
 transformdict['shortening'] = Ingredient(Trans('vegetable shortening', None, 'vegetable shortening', None, 'vegetable shortening', None, None, None), 'Fats and Oils')
 transformdict['oil'] = Ingredient(Trans(None, None, None, None, 'canola oil', 'palm oil', None, None), 'Fats and Oils')
-transformdict['margarine'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
-transformdict['fat'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
-transformdict['fish oil'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
+transformdict['margarine'] = Ingredient(Trans(None, None, None, None, None, 'softened butter', None, None), 'Fats and Oils')
+transformdict['fat'] = Ingredient(Trans('remove', None, 'remove', None, None, 'remove', None, None), 'Fats and Oils')
+transformdict['fish oil'] = Ingredient(Trans(None, None, 'canola oil', None, 'canola oil', None, None, None), 'Fats and Oils')
 transformdict['margarine-like'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
-transformdict['mayonnaise'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
+transformdict['mayonnaise'] = Ingredient(Trans(None, None, 'Whole Foods’ Vegan Mayo', None, None, 'remove', None, None), 'Fats and Oils')
 
 ###Spices and Herbs ## to Mexican only
-transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, ["garlic", "oregano", "cilantro", "epazote"], None), 'Spices and Herbs')
-transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"], None), 'Spices and Herbs')
+
 
 #Soups, Sauces, and Gravies
-transformdict['sauces'] = Ingredient(Trans(None, None, None, None, None, None, ["salsa verde", "salsa roja"], None), 'Fats and Oils')
-#broth vs soup
+#vegan options in this category
 transformdict['v2Soups, Sauces, and Gravies'] = Ingredient(Trans(None, None, None, None, 'low-sodium+', 'high-sodium+' , None, None), 'v2Soups, Sauces, and Gravies')
+#vegetarian options
 transformdict['v1Soups, Sauces, and Gravies'] = Ingredient(Trans(None, '+with beef', 'vegan vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'v1Soups, Sauces, and Gravies')
-transformdict['v2Soups, Sauces, and Gravies'] = Ingredient(Trans('cream of mushroom', None, 'vegetable broth', None, 'low-sodium', 'high-sodium' , None, None), 'Soups, Sauces, and Gravies')
+#meat broths
+transformdict['Broth'] = Ingredient(Trans('vegetable broth', None, 'vegetable broth', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
+transformdict['Gravy'] = Ingredient(Trans('remove', None, 'remove', None, 'remove', 'beef gravy' , None, None), 'Soups, Sauces, and Gravies')
+transformdict['Soup'] = Ingredient(Trans('vegetable soup', None, 'vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
+
 
 #Fruits and Fruit Juices are okay? maybe append fresh for healthy?
-transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
-
+transformdict['Fruits and Fruit Juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
+transformdict['Juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
 #Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
 
 #Nut and Seed Products are okay?
@@ -177,31 +182,48 @@ transformdict['snacks'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , No
 transformdict['breakfast cereals'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Breakfast Cereals')
 
 def makeBakedProductsVegan(name):
-    return 'vegan' + name
+   return 'vegan' + name
 
 # determine the type of an ingredient
 def getIngredientType(ingredient):
-    df = pd.read_csv('FOOD_DES.csv')
-    filteredDF = df[df['Shrt_Desc'].str.contains(ingredient, case=False)]
-    return filteredDF['FdGrp_Cd'].value_counts().idxmax()
+   df = pd.read_csv('FOOD_DES.csv')
+   filteredDF = df[df['Shrt_Desc'].str.contains(ingredient, case=False)]
+   return filteredDF['FdGrp_Cd'].value_counts().idxmax()
 
 
 # generate formatted ingredient name
 def generateIngredientName(desc):
-    desc = desc.lower()
-    name = desc.split(',')
-    name = name[0:2]
-    name = name[::-1]
-    name = ' '.join(name)
-    return name.lstrip()
+   desc = desc.lower()
+   name = desc.split(',')
+   name = name[0:2]
+   name = name[::-1]
+   name = ' '.join(name)
+   return name.lstrip()
 
 #dictionary of subsitution steps
-transinstructions[]
+transinstructions['margarine'] = TransSteps(True, None)
+transinstructions['softened butter'] = TransSteps(True, None)
+transinstructions['tofu'] = TransSteps(True, None)
+transinstructions['Tofutti Milk Free Better Than Sour Cream'] = TransSteps(True, None)
+transinstructions['non-dairy almond milk whipped cream'] = TransSteps(True, None)
+transinstructions['tofu'] = TransSteps(True, None)
+transinstructions['tofu'] = TransSteps(True, None)
+transinstructions['cream substitute'] = TransSteps(True, None) ##change
 
 
 if __name__ == "__main__":
-    a = getIngredientType("chicken")
-    print(a)
-    desc = "Cheese, cottage, lowfat, 1% milkfat"
-    n = generateIngredientName(desc)
-    print(n)
+   a = getIngredientType("chicken")
+   print(a)
+   desc = "Cheese, cottage, lowfat, 1% milkfat"
+   n = generateIngredientName(desc)
+   print(n)
+
+
+
+
+###Spices and Herbs ## to Mexican only
+transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, ["garlic", "oregano", "cilantro", "epazote"], None), 'Spices and Herbs')
+transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"], None), 'Spices and Herbs')
+
+
+
