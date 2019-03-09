@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import regex
+from Recipe import Recipe
 
 
 def parse_ingredients(soup):
@@ -21,7 +22,6 @@ def parse_ingredients(soup):
             items.append(
                 str(item2.find(class_="recipe-ingred_txt added").get_text().lower()))
 
-    print(items)
     return items
 
 
@@ -37,7 +37,6 @@ def parse_directions(soup):
         individual_steps = [s.strip() for s in individual_steps]
         steps.extend(individual_steps)
 
-    print(steps)
     return steps
 
 
@@ -69,6 +68,7 @@ def get_ingredient_components(ingredients):
         ing_name = ing_name.replace(" - ", ",")
         ing_name = ing_name.replace(" to ", ", to ")
         ing_name = ing_name.replace(" for ", ", for ")
+        ing_name = ing_name.replace(" to taste", "")
         ing_name, sep, description = ing_name.partition(",")
 
         description = description.strip()
@@ -85,7 +85,6 @@ def get_ingredient_components(ingredients):
              }
         ingredient_components.append(ing_props)
 
-    print(ingredient_components)
     return ingredient_components
 
 
@@ -128,6 +127,7 @@ def get_direction_components(directions, ingredients):
                     dir_ingredients.append(ing)
                     break
 
+        dir_ingredients = list(set(map(str.lower, dir_ingredients)))
         methods = list(set(map(str.lower, methods)))
         tools = list(set(map(str.lower, tools)))
 
@@ -176,19 +176,21 @@ def parse_recipe(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
 
-    dish = soup.find(id="recipe-main-content").get_text()
-    print("Parsing the directions necessary for " + dish)
+    title = soup.find(id="recipe-main-content").get_text()
+    print("Parsing the directions necessary for", title, "\n")
 
-    ing = parse_ingredients(soup)
+    ingredients = parse_ingredients(soup)
     directions = parse_directions(soup)
 
-    return dish.lower(), ing, directions
+    ingredient_components = get_ingredient_components(ingredients)
+    ing_names = [d['name'] for d in ingredient_components if 'name' in d]
+    direction_components = get_direction_components(directions, ing_names)
+
+    main_cooking_method = parse_cooking_method(title, directions).lower()
+
+    return Recipe(title, ingredients, ingredient_components, directions, direction_components, main_cooking_method)
 
 
 if __name__ == "__main__":
-    title, ing, directions = parse_recipe("https://www.allrecipes.com/recipe/12719")
-    ing_components = get_ingredient_components(ing)
-    ing_names = [d['name'] for d in ing_components if 'name' in d]
-    dir_components = get_direction_components(directions, ing_names)
-    main_cooking_method = parse_cooking_method(title, directions)
-    print(main_cooking_method)
+    title, ing, ing_c, directions, dir_c, main_method = parse_recipe("https://www.allrecipes.com/recipe/12719")
+    a = 1
