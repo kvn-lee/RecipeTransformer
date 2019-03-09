@@ -39,5 +39,3 @@ for item in df['Long_Desc']:
 '''
 print(master_dict)
 
-
-

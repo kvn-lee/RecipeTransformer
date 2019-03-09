@@ -6,15 +6,6 @@ class Ingredient:
        self.trans = trans
        self.categoryName = categoryName
 
-class TransSteps:
-   ##keep refers to merely replacing ingredient names, not removing original instructions
-   ##ie replacing margarine with butter
-   ##steps- if keep is True steps can be added for example to add additional steps (like mixing the two
-   # ingredients that replace one). If keep is false this is used to replace original steps
-   def __init__(self, keep, steps):
-       self.keep = keep
-       self.steps = steps
-
 class Trans:
    def __init__(self, toVegetarian, fromVegetarian, toVegan, fromVegan, toHealthy, fromHealthy, toMexican, fromMexican):
        self.toVegetarian = toVegetarian
@@ -26,10 +17,8 @@ class Trans:
        self.toMexican = toMexican
        self.fromMexican = fromMexican
 
-ingdict={}
-transformdict={}
-transinstructions={}
 
+transformdict={}
 
 ###Dairy and egg products
 transformdict['butter'] = Ingredient(Trans(None, None, 'margarine', None, 'margarine', None, None, None), 'Dairy and Egg Products')
@@ -169,16 +158,6 @@ def generateIngredientName(desc):
    name = ' '.join(name)
    return name.strip()
 '''
-
-#dictionary of subsitution steps
-transinstructions['margarine'] = TransSteps(True, None)
-transinstructions['softened butter'] = TransSteps(True, None)
-transinstructions['tofu'] = TransSteps(True, None)
-transinstructions['Tofutti Milk Free Better Than Sour Cream'] = TransSteps(True, None)
-transinstructions['non-dairy almond milk whipped cream'] = TransSteps(True, None)
-transinstructions['tofu'] = TransSteps(True, None)
-transinstructions['tofu'] = TransSteps(True, None)
-transinstructions['cream substitute'] = TransSteps(True, None) ##change
 
 '''
 if __name__ == "__main__":
