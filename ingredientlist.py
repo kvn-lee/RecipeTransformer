@@ -198,7 +198,7 @@ def generateIngredientName(desc):
    name = name[0:2]
    name = name[::-1]
    name = ' '.join(name)
-   return name.lstrip()
+   return name.strip()
 
 #dictionary of subsitution steps
 transinstructions['margarine'] = TransSteps(True, None)
