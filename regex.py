@@ -13,7 +13,7 @@ unit_words = [
     "pack", "pinch", "dash",
     "ounce", "package", "container",
     "tub", "can", "stalk",
-    "clove", "bunch"
+    "clove", "bunch", "drop"
     ]
 
 units = re.compile("|".join(r"\b{}s?\b".format(u) for u in unit_words), re.I)
@@ -27,7 +27,9 @@ prep_words = [
     "prepared", "fresh", "grated",
     "skinless", "boneless", "shucked",
     "ground", "melted", "boned",
-    "large", "all-purpose"
+    "large", "all-purpose", "uncooked",
+    "freshly ground", "heavy", "freshly grated",
+    "shredded", "dried", "lean"
     ]
 
 prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
@@ -41,7 +43,7 @@ cooking_actions = [
     "roast", "simmer", "steam",
     "stew", "smoke", "deep fried",
     "broil", "fried", "cook",
-    "melt", "heat"
+    "melt", "heat", "drain"
     ]
 
 cook = re.compile("|".join(r"\b{}i?e?d?\b".format(c) for c in cooking_actions), re.I)
@@ -52,14 +54,15 @@ cooking_tools = [
     "pan", "bowl", "skillet",
     "whisk", "oven", "griddle",
     "pressure cooker", "frying pan",
-    "stir"
+    "stir", "dish", "plate",
+    "saucepan"
     ]
 
 tools = re.compile("|".join(r"\b{}\b".format(t) for t in cooking_tools), re.I)
 
 
 # regex for time and time unit
-time = re.compile(r"\d*[.,]?\d* minu?t?e?s?|\d*[.,]?\d* hours?")
+time = re.compile(r"\d*[.,]?\d* minu?t?e?s?|\d*[.,]?\d* hours?|\d*[.,]?\d* seconds?")
 
 
 if __name__ == '__main__':
