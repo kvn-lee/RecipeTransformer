@@ -6,12 +6,13 @@ import pprint
 
 ##
 class Recipe:
-    def __init__(self, title, ingredients, ingredient_components, directions, direction_components, main_cooking_method):
+    def __init__(self, title, ingredients, ingredient_components, directions, direction_components, tools, main_cooking_method):
         self.title = title
         self.ingredient_names = ingredients
         self.ingredient_components = ingredient_components
         self.directions = directions
         self.direction_components = direction_components
+        self.tools = tools
         self.main_cooking_method = main_cooking_method
 
     def print_recipe(self, detailed=False):
@@ -44,10 +45,12 @@ class Recipe:
                 else:
                     print("\t> Time:", None, "\n")
 
-        print("\nMain cooking method:", self.main_cooking_method)
+        print("\nTools:", ", ".join(self.tools))
+
+        print("\nMain cooking method:", self.main_cooking_method, "\n")
 
 
 if __name__ == '__main__':
     r = parser.parse_recipe("https://www.allrecipes.com/recipe/26655")
-    r.print_recipe(detailed=True)
+    r.print_recipe()
     a = 1
