@@ -95,22 +95,22 @@ transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, '
 
 #Soups, Sauces, and Gravies
 #vegan options in this category
-transformdict['v2Soups, Sauces, and Gravies'] = Ingredient(Trans(None, None, None, None, 'low-sodium+', 'high-sodium+' , None, None), 'v2Soups, Sauces, and Gravies')
+transformdict['v2soups, sauces, and gravies'] = Ingredient(Trans(None, None, None, None, 'low-sodium+', 'high-sodium+' , None, None), 'v2Soups, Sauces, and Gravies')
 #vegetarian options
-transformdict['v1Soups, Sauces, and Gravies'] = Ingredient(Trans(None, '+with beef', 'vegan vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'v1Soups, Sauces, and Gravies')
+transformdict['v1soups, sauces, and gravies'] = Ingredient(Trans(None, '+with beef', 'vegan vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'v1Soups, Sauces, and Gravies')
 #meat-based
-transformdict['Broth'] = Ingredient(Trans('vegetable broth', None, 'vegetable broth', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
-transformdict['Gravy'] = Ingredient(Trans('remove', None, 'remove', None, 'remove', 'beef gravy' , None, None), 'Soups, Sauces, and Gravies')
-transformdict['Soup'] = Ingredient(Trans('vegetable soup', None, 'vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
+transformdict['broth'] = Ingredient(Trans('vegetable broth', None, 'vegetable broth', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
+transformdict['gravy'] = Ingredient(Trans('remove', None, 'remove', None, 'remove', 'beef gravy' , None, None), 'Soups, Sauces, and Gravies')
+transformdict['soup'] = Ingredient(Trans('vegetable soup', None, 'vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
 
 #Fruits and Fruit Juices. Later check to make sure don't ask for fresh or canned already
-transformdict['Fruits and Fruit Juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
-transformdict['Juices'] = Ingredient(Trans(None, None, None, None, 'low-sugar+' , None , None, None), 'Fruits and Fruit Juices')
+transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
+transformdict['juices'] = Ingredient(Trans(None, None, None, None, 'low-sugar+' , None , None, None), 'Fruits and Fruit Juices')
 
 #Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
 
 #Nut and Seed Products are healthy in small doses, but eating too much is bad for you
-transformdict['Nut and Seed Products'] = Ingredient(Trans(None, None, None, None, .8 , 2 , None, None), 'Nut and Seed Products')
+transformdict['nut and seed products'] = Ingredient(Trans(None, None, None, None, .8 , 2 , None, None), 'Nut and Seed Products')
 
 #Beverages
 transformdict['carbonated beverage'] = Ingredient(Trans(None, None, None, None, 'remove', None, None, None), 'Beverages')

@@ -6,6 +6,7 @@ import math
 from fractions import Fraction
 from difflib import SequenceMatcher
 from fuzzywuzzy import process
+from fuzzywuzzy import fuzz
 
 choices = list(fooddict.master_dict)
 translatedingredients = {}
@@ -14,6 +15,7 @@ lstofincludedingredients = []
 def maintransformation(recipe, trans):
     newingredientlst = []
     global translatedingredients
+    global lstofincludedingredients
     translatedingredients.clear()
     for ingredient in recipe.ingredient_components:
         bestmatch = ingredienttodict(ingredient['name'])
@@ -21,10 +23,12 @@ def maintransformation(recipe, trans):
         translation = translatetrans(ingredient, transingredient)
         if translation == None: 
             newingredientlst.append(ingredient)
-            lstofincludedingredients = lstofincludedingredients.append(bestmatch)
+            if lstofincludedingredients:
+                lstofincludedingredients = lstofincludedingredients.append(bestmatch)
         else: 
             newingredientlst.append(translation)
-            lstofincludedingredients =lstofincludedingredients.append(translation['name'])
+            if lstofincludedingredients:
+                lstofincludedingredients =lstofincludedingredients.append(translation['name'])
     recipe.ingredient_components = newingredientlst
     return recipe
 
@@ -35,9 +39,18 @@ def ingredienttodict(name):
    if name in fooddict.master_dict:
        return name
    else:
-       bestmatch = process.extractOne(name, choices)
-       if bestmatch: return bestmatch[0]
-       else: return None
+       best_match_choices = process.extractOne(name, choices, scorer=fuzz.token_set_ratio)
+       return best_match_choices[0]
+       # best_match_pct = 0.0
+       # best_match = ""
+       # for choice in best_match_choices:
+       #     choice = choice[0]
+       #     similarity = SequenceMatcher(None, name, choice).ratio()
+       #     if similarity > best_match_pct:
+       #         best_match_pct = similarity
+       #         best_match = choice
+       # if best_match: return best_match
+       # else: return None
 
 #using best match in fooddict, find transformation in the transformationdict
 def dicttotrans(name, trans):
@@ -53,10 +66,11 @@ def dicttotrans(name, trans):
                transops = transops[oname]
            else:
                transops = transops['else']
-   elif maincategory in transops:
+   elif maincategory in transformationdict.transformdict:
        transops = transformationdict.transformdict[maincategory]
    else: return None
-   return transops.trans
+   t = transops.trans.toVegetarian
+   return t
 
 #check results of transformationdictionary, 
 #depending on result return substitution ingredients, else return none
@@ -70,11 +84,21 @@ def translatetrans(original, trans):
    #if it starts or ends with a + add the words
    elif trans == 'remove': 
        return 'remove'
-   else: transinstructions[trans]
+   else:
+       #transinstructions[trans]
+       nmeasure = {}
+       nmeasure["original"] = "hi"
+       nmeasure['name'] = trans
+       nmeasure['unit'] = original['unit']
+       nmeasure['description'] = None
+       nmeasure['prep'] = None
+       nmeasure["quantity"] = None
+       return nmeasure
 
 def scale(original, trans):
     #check measurement
     nmeasure = {}
+    nmeasure["original"] = "hi"
     nmeasure['name'] = original['name']
     nmeasure['unit'] = original['unit']
     nmeasure['description'] = None
@@ -93,6 +117,7 @@ def scale(original, trans):
 
 def mextrans(original, trans):
     replacement = {}
+    replacement["original"] = "hi"
     replacement['unit'] = original['unit']
     replacement['quantity'] = original['quantity']
     replacement['description'] = None
@@ -128,3 +153,9 @@ transinstructions['non-dairy almond milk whipped cream'] = TransSteps(True, None
 transinstructions['tofu'] = TransSteps(True, None)
 transinstructions['tofu'] = TransSteps(True, None)
 transinstructions['cream substitute'] = TransSteps(True, None) ##change
+
+if __name__ == '__main__':
+    test = ingredienttodict("chicken broth")
+    print(test)
+    print(fooddict.master_dict[test])
+    print(dicttotrans(test, "toVegetarian"))

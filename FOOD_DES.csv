@@ -1361,7 +1361,7 @@ NDB_No,FdGrp_Cd,Long_Desc,Shrt_Desc
 6967,"v2Soups, Sauces, and Gravies","Soup, vegetable soup, condensed, low sodium, prepared with equal volume water","SOUP,VEG SOUP,COND,LO NA,PREP W/ EQ VOLUME H2O"
 6968,"v1Soups, Sauces, and Gravies","Soup, cream of mushroom, low sodium, ready-to-serve, canned","SOUP,CRM OF MUSHROOM,LO NA,RTS,CND"
 6969,"v1Soups, Sauces, and Gravies","Potato soup, instant, dry mix","POTATO SOUP,INST,DRY MIX"
-6970,"Broth","Soup, chicken broth, low sodium, canned","SOUP,CHICK BROTH,LO NA,CND"
+6970,"Broth","chicken broth","SOUP,CHICK BROTH,LO NA,CND"
 6971,"Sauce","Sauce, worcestershire","SAUCE,WORCESTERSHIRE"
 6972,"Sauce","Sauce, tomato chili sauce, bottled, with salt","SAUCE,TOMATO CHILI SAU,BTLD,W/SALT"
 6974,"Soup","Soup, vegetable chicken, canned, prepared with water, low sodium","SOUP,VEG CHICK,CND,PREP W/ H2O,LO NA"
