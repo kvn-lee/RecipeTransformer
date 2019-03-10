@@ -90,8 +90,8 @@ transformdict['margarine-like'] = Ingredient(Trans(None, None, None, None, None,
 transformdict['mayonnaise'] = Ingredient(Trans(None, None, 'Whole Foods Vegan Mayo', None, None, 'remove', None, None), 'Fats and Oils')
 
 ###Spices and Herbs ## to Mexican only
-transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, ["garlic", "oregano", "cilantro", "epazote"], None), 'Spices and Herbs')
-transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"], None), 'Spices and Herbs')
+transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, 'mexherbs', None), 'Spices and Herbs')
+transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, 'mexspices', None), 'Spices and Herbs')
 
 #Soups, Sauces, and Gravies
 #vegan options in this category

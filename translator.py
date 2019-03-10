@@ -30,14 +30,15 @@ def dicttotrans(name, trans):
    return transops.trans
 
 def translate(original, trans):
-   if trans == None: print('hi')
-       #do nothing   
+   if trans == None:
+       return None   
    if type(trans) == int:
-        scale(original, trans)
-   elif type(trans) == list:
-       spicedict() ## change this later
+        return scale(original, trans)
+   elif trans == 'mexherbs' or trans == 'mexspices':
+       return mextrans(original, trans)
    #if it starts or ends with a + add the words
-   elif trans == 'remove': print('hi')
+   elif trans == 'remove': 
+       return 'remove'
    else: transinstructions[trans]
 
 def scale(original, trans):
@@ -56,7 +57,21 @@ def scale(original, trans):
             nmeasure['unit'] = original['unit'] + 's'
     return nmeasure
 
-    #depending on this scale
+
+def mextrans(original, trans):
+    replacement = {}
+    replacement['unit'] = original['unit']
+    replacement['quantity'] = original['quantity']
+    if trans == 'mexherbs':
+        replacement['name'] = lstmexherbs[0]
+        del lstmexherbs[0]
+    else:
+        replacement['name'] = lstmexspices[0]
+        del lstmexherbs[0]
+    return replacement
+        
+lstmexherbs = ["garlic", "oregano", "cilantro", "epazote"]
+lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"]
 
 class TransSteps:
    ##keep refers to merely replacing ingredient names, not removing original instructions
