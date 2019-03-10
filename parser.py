@@ -185,10 +185,12 @@ def parse_recipe(url):
     ingredient_components = get_ingredient_components(ingredients)
     ing_names = [d['name'] for d in ingredient_components if 'name' in d]
     direction_components = get_direction_components(directions, ing_names)
-
+    tool_lists = [d['tools'] for d in direction_components if 'tools' in d]
+    tools = [tool for tlist in tool_lists for tool in tlist]
+    tools = list(set(tools))
     main_cooking_method = parse_cooking_method(title, directions).lower()
 
-    return Recipe(title, ingredients, ingredient_components, directions, direction_components, main_cooking_method)
+    return Recipe(title, ingredients, ingredient_components, directions, direction_components, tools, main_cooking_method)
 
 
 if __name__ == "__main__":
