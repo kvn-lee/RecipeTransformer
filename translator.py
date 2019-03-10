@@ -4,12 +4,20 @@ import transformationdict
 import Recipe
 import math
 from fractions import Fraction
+from difflib import SequenceMatcher
+from fuzzywuzzy import process
+
+choices = list(fooddict.master_dict)
 
 ##returns the best name that matches the dictionary for the ingredient
 def ingredienttodict(name):
+   global choices
    if name in fooddict.master_dict:
        return name
-   ## add addtional matching later
+   else:
+       bestmatch = process.extractOne(name, choices)
+       if bestmatch: return bestmatch[0]
+       else: return None
 
 def dicttotrans(name, trans):
    entry = fooddict.master_dict[name]
