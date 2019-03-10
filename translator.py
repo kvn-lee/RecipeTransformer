@@ -14,6 +14,7 @@ lstofincludedingredients = []
 
 def maintransformation(recipe, trans):
     newingredientlst = []
+    newdirectionlst = []
     global translatedingredients
     global lstofincludedingredients
     translatedingredients.clear()
@@ -29,7 +30,23 @@ def maintransformation(recipe, trans):
             newingredientlst.append(translation)
             if lstofincludedingredients:
                 lstofincludedingredients =lstofincludedingredients.append(translation['name'])
+
+    new_direction_components = recipe.direction_components
+    for idx, direction in enumerate(recipe.direction_components):
+        new_direction = []
+        if any(ing in direction["ingredients"] for ing in translatedingredients):
+            for ing in direction["ingredients"]:
+                if ing in translatedingredients:
+                    ingredient_match = process.extractOne(ing, direction["direction"].split())
+                    component = recipe.direction_components[idx]
+                    new_direction = component["direction"].replace(ingredient_match[0], ing)
+                    component["direction"] = new_direction
+                new_direction_components[idx] = component
+
+        #newdirectionlst.append(new_direction)
+
     recipe.ingredient_components = newingredientlst
+    recipe.direction_components = new_direction_components
     return recipe
 
 
@@ -75,6 +92,7 @@ def dicttotrans(name, trans):
 #check results of transformationdictionary, 
 #depending on result return substitution ingredients, else return none
 def translatetrans(original, trans):
+   global translatedingredients
    if trans == None:
        return None   
    if type(trans) == int:
@@ -87,16 +105,21 @@ def translatetrans(original, trans):
    else:
        #transinstructions[trans]
        nmeasure = {}
-       nmeasure["original"] = "hi"
+       #newfull = original['original'].replace(original['name'], trans)
+       if original["quantity"] and original["unit"]:
+           newfull = " ".join([original["quantity"], original["unit"], trans])
+       nmeasure["original"] = newfull
        nmeasure['name'] = trans
        nmeasure['unit'] = original['unit']
        nmeasure['description'] = None
        nmeasure['prep'] = None
        nmeasure["quantity"] = None
+       translatedingredients[original['name']] = trans
        return nmeasure
 
 def scale(original, trans):
     #check measurement
+    global translatedingredients
     nmeasure = {}
     nmeasure["original"] = "hi"
     nmeasure['name'] = original['name']
@@ -112,10 +135,12 @@ def scale(original, trans):
         nmeasure['quantity'] = oldquantity * trans
         if original['quantity'] == 1:
             nmeasure['unit'] = original['unit'] + 's'
+
     return nmeasure
 
 
 def mextrans(original, trans):
+    global translatedingredients
     replacement = {}
     replacement["original"] = "hi"
     replacement['unit'] = original['unit']
@@ -128,6 +153,7 @@ def mextrans(original, trans):
     else:
         replacement['name'] = lstmexspices[0]
         del lstmexherbs[0]
+    translatedingredients[original['name']]= replacement['name']
     return replacement
         
 lstmexherbs = ["garlic", "oregano", "cilantro", "epazote"]
@@ -155,7 +181,11 @@ transinstructions['tofu'] = TransSteps(True, None)
 transinstructions['cream substitute'] = TransSteps(True, None) ##change
 
 if __name__ == '__main__':
-    test = ingredienttodict("chicken broth")
-    print(test)
-    print(fooddict.master_dict[test])
-    print(dicttotrans(test, "toVegetarian"))
+    # test = ingredienttodict("chicken broth")
+    # print(test)
+    # print(fooddict.master_dict[test])
+    # print(dicttotrans(test, "toVegetarian"))
+    ingredent = "campbell's condensed french onion soup"
+    direction = "Stir in the onion soup"
+    match = process.extractOne(ingredent, direction.split())
+    print(match)
