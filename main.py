@@ -1,4 +1,5 @@
 import parser
+import translator
 
 prompt = ("Please enter a number for how to change your recipe:"
           "\n1: To vegetarian"
@@ -27,8 +28,10 @@ def main():
             transformation = input(prompt)
 
         # TRANSFORM RECIPE #
+        newrecipe = translator.maintransformation(recipe, 'toVegan')
 
         # OUTPUT THE NEW RECIPE POST TRANSFORMATION #
+        output_recipe(newrecipe)
 
         # RESET TRANSFORMATION TO 0 TO REPEAT PROCESS #
         transformation = 0

@@ -8,6 +8,26 @@ from difflib import SequenceMatcher
 from fuzzywuzzy import process
 
 choices = list(fooddict.master_dict)
+translatedingredients = {}
+lstofincludedingredients = []
+
+def maintransformation(recipe, trans):
+    newingredientlst = []
+    global translatedingredients
+    translatedingredients.clear()
+    for ingredient in recipe.ingredient_components:
+        bestmatch = ingredienttodict(ingredient['name'])
+        transingredient = dicttotrans(bestmatch, trans)
+        translation = translatetrans(ingredient, transingredient)
+        if translation == None: 
+            newingredientlst.append(ingredient)
+            lstofincludedingredients = lstofincludedingredients.append(bestmatch)
+        else: 
+            newingredientlst.append(translation)
+            lstofincludedingredients =lstofincludedingredients.append(translation['name'])
+    recipe.ingredient_components = newingredientlst
+    return recipe
+
 
 ##returns the best name that matches the dictionary for the ingredient
 def ingredienttodict(name):
@@ -19,6 +39,7 @@ def ingredienttodict(name):
        if bestmatch: return bestmatch[0]
        else: return None
 
+#using best match in fooddict, find transformation in the transformationdict
 def dicttotrans(name, trans):
    entry = fooddict.master_dict[name]
    grouping = entry[0] #example, milk
@@ -37,7 +58,9 @@ def dicttotrans(name, trans):
    else: return None
    return transops.trans
 
-def translate(original, trans):
+#check results of transformationdictionary, 
+#depending on result return substitution ingredients, else return none
+def translatetrans(original, trans):
    if trans == None:
        return None   
    if type(trans) == int:
@@ -54,6 +77,8 @@ def scale(original, trans):
     nmeasure = {}
     nmeasure['name'] = original['name']
     nmeasure['unit'] = original['unit']
+    nmeasure['description'] = None
+    nmeasure['prep'] = None
     oldquantity= float(sum(Fraction(i) for i in original['quantity'].split()))
     if original['unit'] == None:
         nmeasure['quantity'] = math.ceil(oldquantity* trans)
@@ -70,6 +95,8 @@ def mextrans(original, trans):
     replacement = {}
     replacement['unit'] = original['unit']
     replacement['quantity'] = original['quantity']
+    replacement['description'] = None
+    replacement['prep'] = None
     if trans == 'mexherbs':
         replacement['name'] = lstmexherbs[0]
         del lstmexherbs[0]
