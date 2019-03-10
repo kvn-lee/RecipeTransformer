@@ -1,10 +1,3 @@
-import parser
-import pprint
-#import ingredientlist
-#import fooddict
-
-
-##
 class Recipe:
     def __init__(self, title, ingredients, ingredient_components, directions, direction_components, tools, main_cooking_method):
         self.title = title
@@ -49,8 +42,3 @@ class Recipe:
 
         print("\nMain cooking method:", self.main_cooking_method, "\n")
 
-
-if __name__ == '__main__':
-    r = parser.parse_recipe("https://www.allrecipes.com/recipe/26655")
-    r.print_recipe()
-    a = 1

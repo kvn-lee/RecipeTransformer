@@ -1,13 +1,12 @@
 import parser
-import sys
 
 prompt = ("Please enter a number for how to change your recipe:"
           "\n1: To vegetarian"
           "\n2. From vegetarian"
-          "\n3: To vegan"
-          "\n4: From vegan"
-          "\n5: To healthy"
-          "\n6: From Healthy"
+          "\n3: To healthy"
+          "\n4: From healthy"
+          "\n5: To Vegan"
+          "\n6: From Vegan"
           "\n7: To Mexican"
           "\n8: From Mexican\n")
 
