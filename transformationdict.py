@@ -1,6 +1,3 @@
-import pandas as pd
-import fooddict
-
 class Ingredient:
    def __init__(self, trans, categoryName):
        self.trans = trans

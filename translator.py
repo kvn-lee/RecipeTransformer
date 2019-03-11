@@ -1,11 +1,8 @@
-import pandas as pd
 import fooddict
 import transformationdict
-import Recipe
 import math
 import re
 from fractions import Fraction
-from difflib import SequenceMatcher
 from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
 import copy
