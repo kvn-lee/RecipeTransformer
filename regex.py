@@ -31,7 +31,7 @@ prep_words = [
     "freshly ground", "heavy", "freshly grated",
     "shredded", "dried", "lean",
     "finely chopped", "frozen cooked",
-    "without tails"
+    "with .*", "without .*"
     ]
 
 prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
