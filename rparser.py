@@ -61,8 +61,14 @@ def get_ingredient_components(ingredients):
             ing_name = ingredient.split(unit, 1)[1].strip()
         if preparation and preparation in ing_name and ing_name.startswith(preparation):
             ing_name = ing_name.split(preparation, 1)[1]
+            ing_name = ing_name.strip()
         if ing_name.startswith(", "):
             ing_name = ing_name.replace(", ", "", 1)
+
+        additional_prep = next(iter(regex.prep.findall(ing_name)), None)
+        if additional_prep:
+            ing_name = ing_name.replace(additional_prep, "")
+            ing_name = ing_name.strip()
 
         ing_name = ing_name.strip()
         ing_name = ing_name.replace(" - ", ",")
@@ -72,8 +78,10 @@ def get_ingredient_components(ingredients):
         ing_name, sep, description = ing_name.partition(",")
 
         description = description.strip()
-        if description == "":
+        if description == "" and additional_prep == "":
             description = None
+        elif description == "" and additional_prep != "":
+            description = additional_prep
 
         ing_props = {
             "original": original_ingredient,

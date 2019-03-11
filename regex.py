@@ -30,7 +30,8 @@ prep_words = [
     "large", "all-purpose", "uncooked",
     "freshly ground", "heavy", "freshly grated",
     "shredded", "dried", "lean",
-    "finely chopped"
+    "finely chopped", "frozen cooked",
+    "without tails"
     ]
 
 prep = re.compile("|".join(r"\b{}\b".format(p) for p in prep_words), re.I)
