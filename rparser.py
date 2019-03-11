@@ -65,11 +65,6 @@ def get_ingredient_components(ingredients):
         if ing_name.startswith(", "):
             ing_name = ing_name.replace(", ", "", 1)
 
-        additional_prep = next(iter(regex.prep.findall(ing_name)), None)
-        if additional_prep:
-            ing_name = ing_name.replace(additional_prep, "")
-            ing_name = ing_name.strip()
-
         ing_name = ing_name.strip()
         ing_name = ing_name.replace(" - ", ",")
         ing_name = ing_name.replace(" to ", ", to ")
@@ -77,11 +72,20 @@ def get_ingredient_components(ingredients):
         ing_name = ing_name.replace(" to taste", "")
         ing_name, sep, description = ing_name.partition(",")
 
+        additional_prep = next(iter(regex.prep.findall(ing_name)), None)
+        if additional_prep:
+            ing_name = ing_name.replace(additional_prep, "")
+            ing_name = ing_name.strip()
+
         description = description.strip()
-        if description == "" and additional_prep == "":
+        if preparation is not None and additional_prep is not None and description == "":
+            description = ", ".join([preparation, additional_prep])
+        elif description == "" and additional_prep is None:
             description = None
-        elif description == "" and additional_prep != "":
+        elif description == "" and additional_prep is not None:
             description = additional_prep
+        elif description != "" and additional_prep is not None:
+            description = ", ".join([description, additional_prep])
 
         ing_props = {
             "original": original_ingredient,
@@ -202,5 +206,6 @@ def parse_recipe(url):
 
 
 if __name__ == "__main__":
-    title, ing, ing_c, directions, dir_c, main_method = parse_recipe("https://www.allrecipes.com/recipe/12719")
+    b = get_ingredient_components(["1 pound andouille sausage, sliced"])
+    #title, ing, ing_c, directions, dir_c, main_method = parse_recipe("https://www.allrecipes.com/recipe/12719")
     a = 1
