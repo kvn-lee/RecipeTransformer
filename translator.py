@@ -50,7 +50,7 @@ def maintransformation(recipe, trans):
     return recipe
 
 
-##returns the best name that matches the dictionary for the ingredient
+##returns the best name that matches the dictionary for the ingredient. Used to categorize ingredients
 def ingredienttodict(name):
    global choices
    if name in fooddict.master_dict:
@@ -69,7 +69,7 @@ def ingredienttodict(name):
        # if best_match: return best_match
        # else: return None
 
-#using best match in fooddict, find transformation in the transformationdict
+#using best match in fooddict's categories, find transformation in the transformationdict
 def dicttotrans(name, trans):
    entry = fooddict.master_dict[name]
    grouping = entry[0] #example, milk
@@ -77,7 +77,7 @@ def dicttotrans(name, trans):
    #check if sub category is in dictionary
    if grouping in transformationdict.transformdict:
        transops = transformationdict.transformdict[grouping]
-       if type(transops) is dict:
+       if type(transops) is dict: #subcategories within category
            oname = name.replace(grouping, "").strip()
            if oname in transops:
                transops = transops[oname]
@@ -86,8 +86,28 @@ def dicttotrans(name, trans):
    elif maincategory in transformationdict.transformdict:
        transops = transformationdict.transformdict[maincategory]
    else: return None
-   t = transops.trans.toVegetarian
-   return t
+   return getpotentialsub(transops.trans, trans)
+
+def getpotentialsub(options, trans):
+    sub = None
+    if trans == 1:
+        sub = options.toVegetarian
+    elif trans == 2:
+        sub = options.fromVegetarian
+    elif trans == 3:
+        sub = options.toHealthy
+    elif trans == 4:
+        sub = options.fromHealthy
+    elif trans == 5:
+        sub = options.toVegan
+    elif trans == 6:
+        sub = options.fromVegan
+    elif trans == 7:
+        sub = options.toMexican
+    elif trans == 8:
+        sub = options.fromMexican
+    return sub
+
 
 #check results of transformationdictionary, 
 #depending on result return substitution ingredients, else return none
@@ -95,66 +115,74 @@ def translatetrans(original, trans):
    global translatedingredients
    if trans == None:
        return None   
-   if type(trans) == int:
+   elif type(trans) == int:
         return scale(original, trans)
    elif trans == 'mexherbs' or trans == 'mexspices':
        return mextrans(original, trans)
-   #if it starts or ends with a + add the words
+   elif trans.startswith('+') or trans.endswith('+'):
+       return appenddescriptors(original, trans)
    elif trans == 'remove': 
        return 'remove'
    else:
        #transinstructions[trans]
-       nmeasure = {}
-       #newfull = original['original'].replace(original['name'], trans)
-       if original["quantity"] and original["unit"]:
-           newfull = " ".join([original["quantity"], original["unit"], trans])
-       nmeasure["original"] = newfull
-       nmeasure['name'] = trans
-       nmeasure['unit'] = original['unit']
-       nmeasure['description'] = None
-       nmeasure['prep'] = None
-       nmeasure["quantity"] = None
-       translatedingredients[original['name']] = trans
-       return nmeasure
+        newfull = None
+        if original["quantity"] and original["unit"]:
+            newfull = " ".join([original["quantity"], original["unit"], trans])
+        elif original['quantity']:
+            newfull = " ".join([original["quantity"], trans])
+        else: newfull = trans
+        original['name'] = trans
+        original['original'] = newfull
+        original['description'] = 'None'
+        return original
+
+def appenddescriptors(original, trans):
+    newfull = None
+    if trans.startswith('+'):
+        name = ' '.join([original['name'], trans[1:]])
+    else:  
+        name = ' '.join([trans[:-1],original['name']])
+    if original["quantity"] and original["unit"]: 
+        newfull = " ".join([original["quantity"], original["unit"], name])
+    elif original['quantity']:
+        newfull = " ".join([original["quantity"], name])
+    else: newfull = name
+    original['original'] = newfull
+    original['name'] = name
+    return original
 
 def scale(original, trans):
     #check measurement
-    global translatedingredients
-    nmeasure = {}
-    nmeasure["original"] = "hi"
-    nmeasure['name'] = original['name']
-    nmeasure['unit'] = original['unit']
-    nmeasure['description'] = None
-    nmeasure['prep'] = None
     oldquantity= float(sum(Fraction(i) for i in original['quantity'].split()))
     if original['unit'] == None:
-        nmeasure['quantity'] = math.ceil(oldquantity* trans)
+        original['quantity'] = math.ceil(oldquantity* trans)
         if original['quantity'] == 1:
-            nmeasure['name'] = original['name'] + 's'
+            original['name'] = original['name'] + 's'
     else: 
-        nmeasure['quantity'] = oldquantity * trans
+        original['quantity'] = oldquantity * trans
         if original['quantity'] == 1:
-            nmeasure['unit'] = original['unit'] + 's'
-
-    return nmeasure
+            original['unit'] = original['unit'] + 's'
+    return original
 
 
 def mextrans(original, trans):
     global translatedingredients
-    replacement = {}
-    replacement["original"] = "hi"
-    replacement['unit'] = original['unit']
-    replacement['quantity'] = original['quantity']
-    replacement['description'] = None
-    replacement['prep'] = None
     if trans == 'mexherbs':
-        replacement['name'] = lstmexherbs[0]
+        trans = lstmexherbs[0]
         del lstmexherbs[0]
     else:
-        replacement['name'] = lstmexspices[0]
+        trans = lstmexspices[0]
         del lstmexherbs[0]
-    translatedingredients[original['name']]= replacement['name']
-    return replacement
+    newfull = None
+    if original["quantity"] and original["unit"]:
+        newfull = " ".join([original["quantity"], original["unit"], trans])
+    elif original['quantity']:
+        newfull = " ".join([original["quantity"], trans])
+    else: newfull = trans
+    original['name'] = trans
+    original['original'] = newfull
+    #translatedingredients[original['name']]= replacement['name']
+    return original
         
 lstmexherbs = ["garlic", "oregano", "cilantro", "epazote"]
 lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"]
@@ -188,4 +216,7 @@ if __name__ == '__main__':
     ingredent = "campbell's condensed french onion soup"
     direction = "Stir in the onion soup"
     match = process.extractOne(ingredent, direction.split())
-    print(match)
+    name= ingredienttodict('shrimp')
+    print(name)
+    print(dicttotrans(name, 5))
+    #print(match)

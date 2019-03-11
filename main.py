@@ -1,5 +1,6 @@
-import parser
+import rparser
 import translator
+import copy
 
 prompt = ("Please enter a number for how to change your recipe:"
           "\n1: To vegetarian"
@@ -18,23 +19,30 @@ def main():
         url = input("\nPlease enter a valid recipe URL from allrecipes.com: ")
 
     # RETURN ORIGINAL RECIPE #
-    recipe = parser.parse_recipe(url)
+    recipe = rparser.parse_recipe(url)
     output_recipe(recipe)
+
 
     # ASK HOW TO CHANGE RECIPE #
     transformation = 0
-    while True:
+    toTransform = True
+    while toTransform:
         while int(transformation) not in range(1, 9):
             transformation = input(prompt)
 
         # TRANSFORM RECIPE #
-        newrecipe = translator.maintransformation(recipe, 'toVegan')
+        newrecipe = translator.maintransformation(copy.deepcopy(recipe), int(transformation))
 
         # OUTPUT THE NEW RECIPE POST TRANSFORMATION #
         output_recipe(newrecipe)
 
         # RESET TRANSFORMATION TO 0 TO REPEAT PROCESS #
         transformation = 0
+        toStop = 0
+        while int(toStop) not in range(1, 3):
+            toStop = input('Enter 1 to transform again, 2 to stop')
+        if int(toStop) == 2:
+            toTransform = False
 
 
 def output_recipe(rec):
