@@ -288,7 +288,9 @@ NDB_No,FdGrp_Cd,Long_Desc,Shrt_Desc
 2029,Spices and Herbs,"Spices, parsley, dried","PARSLEY,DRIED"
 2030,Spices and Herbs,"Spices, pepper, black","PEPPER,BLACK"
 2031,Spices and Herbs,"Spices, pepper, red or cayenne","PEPPER,RED OR CAYENNE"
+2031,Spices and Herbs,"Spices, pepper, cayenne","PEPPER,RED OR CAYENNE"
 2032,Spices and Herbs,"Spices, pepper, white","PEPPER,WHITE"
+2032,Spices and Herbs,"Spices, pepper","PEPPER,WHITE"
 2033,Spices and Herbs,"Spices, poppy seed",POPPY SEED
 2034,Spices and Herbs,"Spices, poultry seasoning",POULTRY SEASONING
 2035,Spices and Herbs,"Spices, pumpkin pie spice",PUMPKIN PIE SPICE

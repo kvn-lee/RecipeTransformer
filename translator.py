@@ -8,51 +8,96 @@ from fractions import Fraction
 from difflib import SequenceMatcher
 from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
+import copy
 
 choices = list(fooddict.master_dict)
-translatedingredients = {}
-lstofincludedingredients = []
+translatedingredients = {} # list of the dictionaries fro the included ingredients
+#lstIncIngNames = list() # list of the ingredient names in the recipe after translation
 
 def maintransformation(recipe, trans):
-    newingredientlst = []
+    #newingredientlst = [] #new list of ingredients after transformation
     global translatedingredients
-    global lstofincludedingredients
     translatedingredients.clear()
-    for ingredient in recipe.ingredient_components:
-        bestmatch = ingredienttodict(ingredient['name'])
-        transingredient = dicttotrans(bestmatch, trans)
-        translation = translatetrans(ingredient, transingredient)
-        if translation == None: 
-            newingredientlst.append(ingredient)
-            if lstofincludedingredients:
-                lstofincludedingredients = lstofincludedingredients.append(bestmatch)
-        elif not translation == 'remove': 
-            newingredientlst.append(translation)
-            if lstofincludedingredients:
-                lstofincludedingredients =lstofincludedingredients.append(translation['name'])
-    new_direction_components = recipe.direction_components
-    for idx, direction in enumerate(recipe.direction_components):
+    #global lstIncIngNames
+    recipe.ingredient_components = translate_ingredients(recipe.ingredient_components, trans)
+    recipe.direction_components = translate_instructions(recipe.direction_components, translatedingredients, copy.deepcopy(recipe.direction_components))    
+    return recipe
+
+def translate_instructions(direction_comp, transingredients, new_direction_comp):
+    global translatedingredients
+    for idx, direction in enumerate(direction_comp):
         new_direction = []
         directioning = direction['ingredients']
         for ing in direction['ingredients']:
-            if ing in translatedingredients:
+            if ing in transingredients:
                 potentials = re.sub(",", "",direction["direction"])
                 ingredient_match = process.extractOne(ing, potentials.split())
-                component = recipe.direction_components[idx]
-                new_direction = component["direction"].replace(ingredient_match[0], translatedingredients[ing])
-                component["direction"] = new_direction
-                
+                component = direction_comp[idx]
+                new_direction = component["direction"].replace(ingredient_match[0], transingredients[ing])
+                component["direction"] = new_direction                
                 for i in range (len(directioning)):
                     if directioning[i] == ing:
-                        directioning[i] = translatedingredients[ing]
+                        directioning[i] = transingredients[ing]
                 component['ingredients'] = directioning
-                new_direction_components[idx] = component
-    recipe.ingredient_components = newingredientlst
-    recipe.direction_components = new_direction_components
-    return recipe
+                new_direction_comp[idx] = component
+    return new_direction_comp
 
-#def removepunctionation(direction):
- #   direction = direction
+
+def translate_ingredients(ingredient_comp, trans):
+    lstIncIngNames = []
+    newingredientlst = [] #new list of ingredients after transformation
+    #translatedingredients = {}
+    for ingredient in ingredient_comp:
+        bestmatch = ingredienttodict(ingredient['name']) #find best match in food dict, return name of best match
+        transingredient = dicttotrans(bestmatch, trans) #find right transformation for the best match and transformation wanted
+        translation = translatetrans(ingredient, transingredient) #return new ingredient object, None, or 'remove'
+        #if no translation append old ingredient object ot new ingredient list
+        if translation == None: 
+            #check if a transformation caused a duplicate ingredient, if so change amount of previous instead of adding
+            if bestmatch not in lstIncIngNames:
+                lstIncIngNames.append(bestmatch)
+                newingredientlst.append(ingredient)
+            else:
+                i = lstIncIngNames.index(bestmatch)
+                oldinstance = newingredientlst[i]
+                newingredientlst[i] = addunits(oldinstance, ingredient)
+        elif not translation == 'remove': 
+            if translation['name'] not in lstIncIngNames:
+                lstIncIngNames.append(translation['name'])
+                newingredientlst.append(ingredient)
+            else:
+                i = lstIncIngNames.index(translation['name'])
+                oldinstance = newingredientlst[i]
+                newingredientlst[i] = addunits(oldinstance, ingredient)
+    print('included ingredients')
+    print(lstIncIngNames)
+    return newingredientlst
+
+def addunits(old, new):
+    oldquantitystr = str(old['quantity'])
+    oldquantity = convert_to_decimal(oldquantitystr)
+    newquantitystr = new['quantity']
+    newquantity = convert_to_decimal(newquantitystr)
+    
+    if new['unit'] == old['unit']:
+        old['quantity'] = newquantity + oldquantity
+        old['original'] = old['original'].replace(oldquantitystr, old['quantity'])
+    else: 
+        if new['unit'] == None: new['unit'] = ''
+        if old['unit'] == None: old['unit'] = ''    
+        old['quantity'] = str(oldquantity) + str(newquantity)
+        old['unit'] = old['unit'] + ' ' + new['unit']
+        newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
+        old['original'] = old['original'].replace(oldquantitystr, newunitmeasurement)
+    return old
+
+def convert_to_decimal(strnum):
+    if '/' in strnum:
+        oldquantity = float(sum(Fraction(i) for i in strnum.split()))
+    else:
+        oldquantity = float(strnum)
+    return oldquantity
+
 
 ##returns the best name that matches the dictionary for the ingredient. Used to categorize ingredients
 def ingredienttodict(name):
