@@ -26,7 +26,7 @@ def maintransformation(recipe, trans):
             newingredientlst.append(ingredient)
             if lstofincludedingredients:
                 lstofincludedingredients = lstofincludedingredients.append(bestmatch)
-        else: 
+        elif not translation == 'remove': 
             newingredientlst.append(translation)
             if lstofincludedingredients:
                 lstofincludedingredients =lstofincludedingredients.append(translation['name'])
@@ -115,33 +115,40 @@ def translatetrans(original, trans):
    global translatedingredients
    if trans == None:
        return None   
-   elif type(trans) == int:
+   elif type(trans) == int or type(trans) == float:
         return scale(original, trans)
    elif trans == 'mexherbs' or trans == 'mexspices':
        return mextrans(original, trans)
-   elif trans.startswith('+') or trans.endswith('+'):
+   elif type(trans)== str and trans.startswith('+') or trans.endswith('+'):
        return appenddescriptors(original, trans)
    elif trans == 'remove': 
        return 'remove'
    else:
-       #transinstructions[trans]
-        newfull = None
-        if original["quantity"] and original["unit"]:
-            newfull = " ".join([original["quantity"], original["unit"], trans])
-        elif original['quantity']:
-            newfull = " ".join([original["quantity"], trans])
-        else: newfull = trans
-        original['name'] = trans
-        original['original'] = newfull
-        original['description'] = 'None'
-        return original
+       #transinstructions[trans]        
+        return switchingredients(original,trans)
+
+def switchingredients(original, trans):
+    newfull = None
+    if original["quantity"] and original["unit"]:
+        newfull = " ".join([original["quantity"], original["unit"], trans])
+    elif original['quantity']:
+        newfull = " ".join([original["quantity"], trans])
+    else: newfull = trans
+    original['name'] = trans
+    original['original'] = newfull
+    original['description'] = 'None'
+    return original
 
 def appenddescriptors(original, trans):
-    newfull = None
+    #newfull = None
     if trans.startswith('+'):
-        name = ' '.join([original['name'], trans[1:]])
-    else:  
-        name = ' '.join([trans[:-1],original['name']])
+        trans = trans[1:]
+        if trans not in original['name']:
+            name = ' '.join([original['name'], trans])
+    else: 
+        trans = trans[:-1]
+        if trans not in original['name']:
+            name = ' '.join([trans,original['name']])
     if original["quantity"] and original["unit"]: 
         newfull = " ".join([original["quantity"], original["unit"], name])
     elif original['quantity']:
@@ -153,15 +160,20 @@ def appenddescriptors(original, trans):
 
 def scale(original, trans):
     #check measurement
-    oldquantity= float(sum(Fraction(i) for i in original['quantity'].split()))
+    oldquantitystr = original['quantity']
+    if '/' in oldquantitystr:
+        oldquantity = float(sum(Fraction(i) for i in oldquantitystr.split()))#original['quantity'].split()))
+    else:
+        oldquantity = float(oldquantitystr)
     if original['unit'] == None:
         original['quantity'] = math.ceil(oldquantity* trans)
         if original['quantity'] == 1:
             original['name'] = original['name'] + 's'
     else: 
-        original['quantity'] = oldquantity * trans
+        original['quantity'] = str(oldquantity * trans)
         if original['quantity'] == 1:
             original['unit'] = original['unit'] + 's'
+    original['original'] = original['original'].replace(oldquantitystr, original['quantity'])
     return original
 
 
