@@ -27,9 +27,9 @@ def translate_instructions(direction_comp, transingredients, new_direction_comp)
     for idx, direction in enumerate(direction_comp):
         new_direction = []
         directioning = direction['ingredients']
+        potentials = re.sub(",", "",direction["direction"])
         for ing in direction['ingredients']:
-            if ing in transingredients:
-                potentials = re.sub(",", "",direction["direction"])
+            if ing in transingredients:                
                 ingredient_match = process.extractOne(ing, potentials.split())
                 component = direction_comp[idx]
                 new_direction = component["direction"].replace(ingredient_match[0], transingredients[ing])
