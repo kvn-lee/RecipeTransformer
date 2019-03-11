@@ -15,12 +15,11 @@ translatedingredients = {} # list of the dictionaries fro the included ingredien
 #lstIncIngNames = list() # list of the ingredient names in the recipe after translation
 
 def maintransformation(recipe, trans):
-    #newingredientlst = [] #new list of ingredients after transformation
     global translatedingredients
     translatedingredients.clear()
-    #global lstIncIngNames
     recipe.ingredient_components = translate_ingredients(recipe.ingredient_components, trans)
     recipe.direction_components = translate_instructions(recipe.direction_components, translatedingredients, copy.deepcopy(recipe.direction_components))    
+    recipe.title = translate_title(recipe.title, translatedingredients)
     return recipe
 
 def translate_instructions(direction_comp, transingredients, new_direction_comp):
@@ -42,15 +41,25 @@ def translate_instructions(direction_comp, transingredients, new_direction_comp)
                 new_direction_comp[idx] = component
     return new_direction_comp
 
+def translate_title(title, translatedingredients):
+    title = title.lower()
+    for title_word in title.split():
+        if title_word in translatedingredients:
+            potentials = re.sub(",", "", title)
+            ingredient_match = process.extractOne(title_word, potentials.split())
+            title = title.replace(ingredient_match[0], translatedingredients[title_word])
+
+    title = " ".join(w.capitalize() for w in title.split())
+    return title
 
 def translate_ingredients(ingredient_comp, trans):
     lstIncIngNames = []
     newingredientlst = [] #new list of ingredients after transformation
     #translatedingredients = {}
     for ingredient in ingredient_comp:
-        bestmatch = ingredienttodict(ingredient['name']) #find best match in food dict, return name of best match
-        transingredient = dicttotrans(bestmatch, trans) #find right transformation for the best match and transformation wanted
-        translation = translatetrans(ingredient, transingredient) #return new ingredient object, None, or 'remove'
+        bestmatch = find_match_in_fooddict(ingredient['name']) #find best match in food dict, return name of best match
+        transingredient = return_trans_in_transformationdict(bestmatch, trans) #find right transformation for the best match and transformation wanted
+        translation = preform_ingredient_trans(ingredient, transingredient) #return new ingredient object, None, or 'remove'
         #if no translation append old ingredient object ot new ingredient list
         if translation == None: 
             #check if a transformation caused a duplicate ingredient, if so change amount of previous instead of adding
@@ -81,7 +90,7 @@ def addunits(old, new):
     
     if new['unit'] == old['unit']:
         old['quantity'] = newquantity + oldquantity
-        old['original'] = old['original'].replace(oldquantitystr, old['quantity'])
+        old['original'] = old['original'].replace(oldquantitystr, str(old['quantity']))
     else: 
         if new['unit'] == None: new['unit'] = ''
         if old['unit'] == None: old['unit'] = ''    
@@ -100,26 +109,16 @@ def convert_to_decimal(strnum):
 
 
 ##returns the best name that matches the dictionary for the ingredient. Used to categorize ingredients
-def ingredienttodict(name):
+def find_match_in_fooddict(name):
    global choices
-   if name in fooddict.master_dict:
+   if name in choices:
        return name
    else:
        best_match_choices = process.extractOne(name, choices, scorer=fuzz.token_set_ratio)
        return best_match_choices[0]
-       # best_match_pct = 0.0
-       # best_match = ""
-       # for choice in best_match_choices:
-       #     choice = choice[0]
-       #     similarity = SequenceMatcher(None, name, choice).ratio()
-       #     if similarity > best_match_pct:
-       #         best_match_pct = similarity
-       #         best_match = choice
-       # if best_match: return best_match
-       # else: return None
 
 #using best match in fooddict's categories, find transformation in the transformationdict
-def dicttotrans(name, trans):
+def return_trans_in_transformationdict(name, trans):
    entry = fooddict.master_dict[name]
    grouping = entry[0] #example, milk
    maincategory = entry[1] #ex baking products
@@ -135,9 +134,9 @@ def dicttotrans(name, trans):
    elif maincategory in transformationdict.transformdict:
        transops = transformationdict.transformdict[maincategory]
    else: return None
-   return getpotentialsub(transops.trans, trans)
+   return return_desired_trans_option(transops.trans, trans)
 
-def getpotentialsub(options, trans):
+def return_desired_trans_option(options, trans):
     sub = None
     if trans == 1:
         sub = options.toVegetarian
@@ -160,14 +159,12 @@ def getpotentialsub(options, trans):
 
 #check results of transformationdictionary, 
 #depending on result return substitution ingredients, else return none
-def translatetrans(original, trans):
+def preform_ingredient_trans(original, trans):
    global translatedingredients
    if trans == None:
        return None   
    elif type(trans) == int or type(trans) == float:
         return scale(original, trans)
-   #elif trans == 'mexherbs' or trans == 'mexspices':
-    #   return mextrans(original, trans)
    elif type(trans)== str and trans.startswith('+') or trans.endswith('+'):
        return appenddescriptors(original, trans)
    elif trans == 'remove': 
@@ -217,10 +214,7 @@ def appenddescriptors(original, trans):
 def scale(original, trans):
     #check measurement
     oldquantitystr = original['quantity']
-    if '/' in oldquantitystr:
-        oldquantity = float(sum(Fraction(i) for i in oldquantitystr.split()))#original['quantity'].split()))
-    else:
-        oldquantity = float(oldquantitystr)
+    oldquantity = convert_to_decimal(oldquantitystr)
     if original['unit'] == None:
         original['quantity'] = math.ceil(oldquantity* trans)
         if original['quantity'] == 1:
@@ -276,14 +270,14 @@ transinstructions['tofu'] = TransSteps(True, None)
 transinstructions['cream substitute'] = TransSteps(True, None) ##change
 
 if __name__ == '__main__':
-    # test = ingredienttodict("chicken broth")
+    # test = find_match_in_fooddict("chicken broth")
     # print(test)
     # print(fooddict.master_dict[test])
-    # print(dicttotrans(test, "toVegetarian"))
+    # print(return_trans_in_transformationdict(test, "toVegetarian"))
     ingredent = "campbell's condensed french onion soup"
     direction = "Stir in the onion soup"
     match = process.extractOne(ingredent, direction.split())
-    name= ingredienttodict('frozen cooked shrimp without tails')
+    name= find_match_in_fooddict('frozen cooked shrimp without tails')
     print(name)
-    print(dicttotrans(name, 5))
+    print(return_trans_in_transformationdict(name, 5))
     #print(match)
