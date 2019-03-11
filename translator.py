@@ -214,7 +214,8 @@ def appenddescriptors(original, trans):
 def init_spices():
     global lstmexspices
     if not lstmexspices:
-        lstmexspices = ["garlic", "oregano", "cilantro", "epazote"]
+        lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder", "oregano", "cilantro",
+                        "epazote", "garlic"]
 
 def scale(original, trans):
     #check measurement
