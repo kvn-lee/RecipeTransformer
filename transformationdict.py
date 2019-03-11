@@ -52,10 +52,9 @@ transformdict['turkey'] = Ingredient(Trans('tofu', None, 'tofu', None, None, Non
 transformdict['bologna'] = Ingredient(Trans('meatless bologna', None, 'meatless bologna', None, None, None, None, None), 'Sausages and Luncheon Meats')
 transformdict['bratwurst'] = Ingredient(Trans('vegan beer brats', None, 'vegan beer brats', None, None, None, None, None), 'Sausages and Luncheon Meats')
 transformdict['frankfurter'] = Ingredient(Trans('vegan beer brats', None, 'vegan beer brats', None, None, None, None, None), 'Sausages and Luncheon Meats')
-#transformdict['ham'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Sausages and Luncheon Meats')
 transformdict['salami'] = Ingredient(Trans('vegan veggie salami slices', None, 'vegan veggie salami slices', None, None, None, None, None), 'Sausages and Luncheon Meats')
 transformdict['sausage'] = Ingredient(Trans('tofurky sausage', None, 'tofurky sausage', None, None, None, None, None), 'Sausages and Luncheon Meats')
-transformdict['turkey breast'] = Ingredient(Trans('tofurky deli slices', None, 'tofurky deli slices', None, None, None, None, None), 'Sausages and Luncheon Meats')
+#transformdict['turkey breast'] = Ingredient(Trans('tofurky deli slices', None, 'tofurky deli slices', None, None, None, None, None), 'Sausages and Luncheon Meats')
 
 ##Pork Products
 transformdict['pork'] = Ingredient(Trans('seitan', None, 'seitan', None, None, None, None, None), 'Pork Products')
@@ -84,7 +83,7 @@ transformdict['margarine'] = Ingredient(Trans(None, None, None, None, None, 'sof
 transformdict['fat'] = Ingredient(Trans('remove', None, 'remove', None, None, 'remove', None, None), 'Fats and Oils')
 transformdict['fish oil'] = Ingredient(Trans(None, None, 'canola oil', None, 'canola oil', None, None, None), 'Fats and Oils')
 transformdict['margarine-like'] = Ingredient(Trans(None, None, None, None, None, 'butter', None, None), 'Fats and Oils')
-transformdict['mayonnaise'] = Ingredient(Trans(None, None, 'Whole Foods Vegan Mayo', None, None, 'remove', None, None), 'Fats and Oils')
+transformdict['mayonnaise'] = Ingredient(Trans(None, None, 'Whole Foods Vegan Mayo', None, None, 'remove', 'remove', None), 'Fats and Oils')
 
 ###Spices and Herbs ## to Mexican only
 transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, 'mexspices', None), 'Spices and Herbs')
@@ -122,7 +121,7 @@ transformdict['flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat f
 transformdict['cornstarch'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
 transformdict['rice'] = Ingredient(Trans(None, None, None, None, 'brown rice', 'white rice', 'arroz', None), 'Cereal Grains and Pasta')
 transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
-transformdict['pasta'] = Ingredient(Trans(None, None, None, None, 'quinoa pasta', None, None, None), 'Cereal Grains and Pasta')
+transformdict['pasta'] = Ingredient(Trans(None, None, None, None, 'quinoa pasta', None, 'arroz', None), 'Cereal Grains and Pasta')
 
 #Baked Products. Can buy vegan options of most of these (ie vegan cake).
 #Or these have options that are vegan and some that aren't so add vegan (ex some breads depending on company) to specify to check
