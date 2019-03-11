@@ -22,8 +22,8 @@ transformdict={}
 
 ###Dairy and egg products
 transformdict['butter'] = Ingredient(Trans(None, None, 'margarine', None, 'margarine', None, None, None), 'Dairy and Egg Products')
-transformdict['cheese'] = Ingredient(Trans(None, None, 'dairy-free cheese', None, 'remove', None, None, None), 'Dairy and Egg Products')
-transformdict['cream'] = {'sour cream':Ingredient(Trans(None, None, 'Tofutti Milk Free Better Than Sour Cream', None, 'Tofutti Milk Free Better Than Sour Cream', None, None, None), 'Dairy and Egg Products') ,
+transformdict['cheese'] = Ingredient(Trans(None, None, 'dairy-free cheese', None, 'remove', None, 'queso fresco', None), 'Dairy and Egg Products')
+transformdict['cream'] = {'sour cream':Ingredient(Trans(None, None, 'Tofutti Milk Free Better Than Sour Cream', None, 'Tofutti Milk Free Better Than Sour Cream', None, 'crema', None), 'Dairy and Egg Products') ,
 'whipped cream':Ingredient(Trans(None, None, 'non-dairy almond milk whipped cream', None, 'almond milk whipped cream', None, None, None), 'Dairy and Egg Products') ,
 'else':Ingredient(Trans(None, None, 'coconut milk', None, 'coconut milk', None, None, None), 'Dairy and Egg Products')}
 transformdict['eggnog'] = Ingredient(Trans(None, None, 'coconut milk', None, 'coconut milk', None, None, None), 'Dairy and Egg Products')
@@ -104,7 +104,7 @@ transformdict['gravy'] = Ingredient(Trans('remove', None, 'remove', None, 'remov
 transformdict['soup'] = Ingredient(Trans('vegetable soup', None, 'vegetable soup', None, 'low-sodium+', 'high-sodium+' , None, None), 'Soups, Sauces, and Gravies')
 
 #Fruits and Fruit Juices. Later check to make sure don't ask for fresh or canned already
-transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , None, None), 'Fruits and Fruit Juices')
+transformdict['fruits and fruit juices'] = Ingredient(Trans(None, None, None, None, 'fresh+' , 'canned+' , 'avocado', None), 'Fruits and Fruit Juices')
 transformdict['juices'] = Ingredient(Trans(None, None, None, None, 'low-sugar+' , None , None, None), 'Fruits and Fruit Juices')
 
 #Vegetables and Vegetable Products okay? maybe for unhealthy add meat? or sauces?
@@ -123,13 +123,14 @@ transformdict['tofu'] = Ingredient(Trans(None, 'beef', None, 'beef', None, 'beef
 #Cereal Grains and Pasta
 transformdict['flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
 transformdict['cornstarch'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
-transformdict['rice'] = Ingredient(Trans(None, None, None, None, 'brown rice', 'white rice', None, None), 'Cereal Grains and Pasta')
+transformdict['rice'] = Ingredient(Trans(None, None, None, None, 'brown rice', 'white rice', 'arroz', None), 'Cereal Grains and Pasta')
 transformdict['wheat flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
 transformdict['pasta'] = Ingredient(Trans(None, None, None, None, 'quinoa pasta', None, None, None), 'Cereal Grains and Pasta')
 
-#Baked Products. Can buy vegan options of most of these (ie vegan cake). 
+#Baked Products. Can buy vegan options of most of these (ie vegan cake).
 #Or these have options that are vegan and some that aren't so add vegan (ex some breads depending on company) to specify to check
 transformdict['baked products'] = Ingredient(Trans(None, None, 'vegan+', None, 'sugar-free+', None, None, None), 'Baked Products')
+transformdict['bread'] = Ingredient(Trans(None, None, None, None, None, None, 'tortilla', None), 'Baked Products')
 
 #Sweets- for healthy reduce them by ratio, for unhealthy increase them
 transformdict['sweets'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Sweets')
@@ -167,8 +168,3 @@ if __name__ == "__main__":
    n = generateIngredientName(desc)
    print(n)
 '''
-
-
-
-
-
