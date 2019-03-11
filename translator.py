@@ -211,6 +211,11 @@ def appenddescriptors(original, trans):
     original['name'] = name
     return original
 
+def init_spices():
+    global lstmexspices
+    if not lstmexspices:
+        lstmexspices = ["garlic", "oregano", "cilantro", "epazote"]
+
 def scale(original, trans):
     #check measurement
     oldquantitystr = original['quantity']
@@ -228,12 +233,10 @@ def scale(original, trans):
 
 def mextrans(original, trans):
     global translatedingredients
-    if trans == 'mexherbs':
-        trans = lstmexherbs[0]
-        del lstmexherbs[0]
-    else:
-        trans = lstmexspices[0]
-        del lstmexherbs[0]
+    global lstmexspices
+    init_spices()
+    trans = lstmexspices[0]
+    del lstmexspices[0]
     newfull = None
     if original["quantity"] and original["unit"]:
         newfull = " ".join([original["quantity"], original["unit"], trans])
@@ -245,29 +248,9 @@ def mextrans(original, trans):
     #translatedingredients[original['name']]= replacement['name']
     return original
         
-lstmexherbs = ["garlic", "oregano", "cilantro", "epazote"]
-lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder"]
+lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder", "oregano", "cilantro", "epazote", "garlic"]
 
-class TransSteps:
-   ##keep refers to merely replacing ingredient names, not removing original instructions
-   ##ie replacing margarine with butter
-   ##steps- if keep is True steps can be added for example to add additional steps (like mixing the two
-   # ingredients that replace one). If keep is false this is used to replace original steps
-   def __init__(self, keep, steps):
-       self.keep = keep
-       self.steps = steps
 
-transinstructions = {}
-
-#dictionary of subsitution steps
-transinstructions['margarine'] = TransSteps(True, None)
-transinstructions['softened butter'] = TransSteps(True, None)
-transinstructions['tofu'] = TransSteps(True, None)
-transinstructions['Tofutti Milk Free Better Than Sour Cream'] = TransSteps(True, None)
-transinstructions['non-dairy almond milk whipped cream'] = TransSteps(True, None)
-transinstructions['tofu'] = TransSteps(True, None)
-transinstructions['tofu'] = TransSteps(True, None)
-transinstructions['cream substitute'] = TransSteps(True, None) ##change
 
 if __name__ == '__main__':
     # test = find_match_in_fooddict("chicken broth")

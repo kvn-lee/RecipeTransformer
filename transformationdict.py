@@ -31,14 +31,14 @@ transformdict['sour cream'] = Ingredient(Trans(None, None, 'Tofutti Milk Free Be
 transformdict['whey'] = Ingredient(Trans(None, None, 'brown rice protein powder', None, 'brown rice protein powder', None, None, None), 'Dairy and Egg Products')
 transformdict['yogurt'] = Ingredient(Trans(None, None, 'vegan yogurt', None, 'greek yogurt', None, None, None), 'Dairy and Egg Products')
 transformdict['egg'] = {'white':Ingredient(Trans(None, None, 'egg white substitute', None, None, None, None, None), 'Dairy and Egg Products'),
-'yoke':Ingredient(Trans(None, None, {'water' : '1/4 cup', 'chickpea flour' :'1/4 cup'}, None, 'egg white', None, None, None), 'Dairy and Egg Products'),
-'else':Ingredient(Trans(None, None, {'water' : '1/4 cup', 'chickpea flour' :'1/4 cup'}, None, 'egg white', None, None, None), 'Dairy and Egg Products')}
+'yoke':Ingredient(Trans(None, None, 'veganeggsub', None, 'egg white', None, None, None), 'Dairy and Egg Products'),
+'else':Ingredient(Trans(None, None, 'veganeggsub', None, 'egg white', None, None, None), 'Dairy and Egg Products')}
 transformdict['butter'] = Ingredient(Trans(None, None, 'margarine', None, 'margarine', None, None, None), 'Dairy and Egg Products')
 transformdict['cream substitute'] = Ingredient(Trans(None, None, None, 'cream', None, None, None, None), 'Dairy and Egg Products')
 transformdict['ice cream'] = Ingredient(Trans(None, None, 'vegan gelato', None, 'frozen yogurt', None, None, None), 'Dairy and Egg Products')
 transformdict['cheese spread'] = Ingredient(Trans(None, None, 'vegan cream cheese', None, 'hummus', None, None, None), 'Dairy and Egg Products')
 transformdict['milk'] = {'else': Ingredient(Trans(None, None, 'almond milk', None, 'almond milk', None, None, None), 'Dairy and Egg Products'),
-'buttermilk' : Ingredient(Trans(None, None, {'soy milk': '1', 'lemon juice':'1 tablespoon'}, None, {'soy milk': '1', 'lemon juice':'1 tablespoon'}, None, None, None), 'Dairy and Egg Products'),
+'buttermilk' : Ingredient(Trans(None, None, 'buttermilksub', None, 'buttermilksub', None, None, None), 'Dairy and Egg Products'),
 'chocolate milk' : Ingredient(Trans(None, None, 'dairy-free chocolate milk', None, 'soy milk', None, None, None), 'Dairy and Egg Products'),
 'condensed' : Ingredient(Trans(None, None, 'condensed coconut milk', None, 'condensed coconut milk', None, None, None), 'Dairy and Egg Products'),
 'evaporated' : Ingredient(Trans(None, None, 'condensed coconut milk', None, 'condensed coconut milk', None, None, None), 'Dairy and Egg Products')}
@@ -90,7 +90,7 @@ transformdict['margarine-like'] = Ingredient(Trans(None, None, None, None, None,
 transformdict['mayonnaise'] = Ingredient(Trans(None, None, 'Whole Foods Vegan Mayo', None, None, 'remove', None, None), 'Fats and Oils')
 
 ###Spices and Herbs ## to Mexican only
-transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, 'mexherbs', None), 'Spices and Herbs')
+transformdict['herbs'] = Ingredient(Trans(None, None, None, None, None, None, 'mexspices', None), 'Spices and Herbs')
 transformdict['spices'] = Ingredient(Trans(None, None, None, None, None, None, 'mexspices', None), 'Spices and Herbs')
 
 #Soups, Sauces, and Gravies
@@ -118,7 +118,7 @@ transformdict['carbonated beverage'] = Ingredient(Trans(None, None, None, None, 
 ##add rule if original recipe has ingredients with "meatless", "vegan", "vegetarian" remove to make unvegetarian/unvegan
 #Legumes and Legume Products
 transformdict['peanut butter'] = Ingredient(Trans(None, None, None, None, 'almond butter', None, None, None), 'Legumes and Legume Products')
-transformdict['tofu'] = Ingredient(Trans(None, 'beef', None, 'beef', None, 'beef', None, None), 'Legumes and Legume Products')
+transformdict['tofu'] = Ingredient(Trans(None, 'cooked beef', None, 'cooked beef', None, 'cooked beef', None, None), 'Legumes and Legume Products')
 
 #Cereal Grains and Pasta
 transformdict['flour'] = Ingredient(Trans(None, None, None, None, 'whole wheat flour', 'white flour', None, None), 'Cereal Grains and Pasta')
@@ -141,30 +141,3 @@ transformdict['snacks'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , No
 
 #Breakfast Cereals- for healthy reduce them by ratio, for unhealthy increase them
 transformdict['breakfast cereals'] = Ingredient(Trans(None, None, None, None, .8 , 1.2 , None, None), 'Breakfast Cereals')
-
-
-'''
-# determine the type of an ingredient
-def getIngredientType(ingredient):
-   df = pd.read_csv('FOOD_DES.csv')
-   filteredDF = df[df['Shrt_Desc'].str.contains(ingredient, case=False)]
-   return filteredDF['FdGrp_Cd'].value_counts().idxmax()
-
-# generate formatted ingredient name
-def generateIngredientName(desc):
-   desc = desc.lower()
-   name = desc.split(',')
-   name = name[0:2]
-   name = name[::-1]
-   name = ' '.join(name)
-   return name.strip()
-'''
-
-'''
-if __name__ == "__main__":
-   a = getIngredientType("chicken")
-   print(a)
-   desc = "Cheese, cottage, lowfat, 1% milkfat"
-   n = generateIngredientName(desc)
-   print(n)
-'''

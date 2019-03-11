@@ -40,7 +40,7 @@ def main():
         transformation = 0
         toStop = 0
         while int(toStop) not in range(1, 3):
-            toStop = input('Enter 1 to transform again, 2 to stop')
+            toStop = input('Enter 1 to transform again, 2 to stop: ')
         if int(toStop) == 2:
             toTransform = False
 
