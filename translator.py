@@ -3,6 +3,7 @@ import fooddict
 import transformationdict
 import Recipe
 import math
+import re
 from fractions import Fraction
 from difflib import SequenceMatcher
 from fuzzywuzzy import process
@@ -14,7 +15,6 @@ lstofincludedingredients = []
 
 def maintransformation(recipe, trans):
     newingredientlst = []
-    newdirectionlst = []
     global translatedingredients
     global lstofincludedingredients
     translatedingredients.clear()
@@ -30,25 +30,29 @@ def maintransformation(recipe, trans):
             newingredientlst.append(translation)
             if lstofincludedingredients:
                 lstofincludedingredients =lstofincludedingredients.append(translation['name'])
-
     new_direction_components = recipe.direction_components
     for idx, direction in enumerate(recipe.direction_components):
         new_direction = []
-        if any(ing in direction["ingredients"] for ing in translatedingredients):
-            for ing in direction["ingredients"]:
-                if ing in translatedingredients:
-                    ingredient_match = process.extractOne(ing, direction["direction"].split())
-                    component = recipe.direction_components[idx]
-                    new_direction = component["direction"].replace(ingredient_match[0], ing)
-                    component["direction"] = new_direction
+        directioning = direction['ingredients']
+        for ing in direction['ingredients']:
+            if ing in translatedingredients:
+                potentials = re.sub(",", "",direction["direction"])
+                ingredient_match = process.extractOne(ing, potentials.split())
+                component = recipe.direction_components[idx]
+                new_direction = component["direction"].replace(ingredient_match[0], translatedingredients[ing])
+                component["direction"] = new_direction
+                
+                for i in range (len(directioning)):
+                    if directioning[i] == ing:
+                        directioning[i] = translatedingredients[ing]
+                component['ingredients'] = directioning
                 new_direction_components[idx] = component
-
-        #newdirectionlst.append(new_direction)
-
     recipe.ingredient_components = newingredientlst
     recipe.direction_components = new_direction_components
     return recipe
 
+#def removepunctionation(direction):
+ #   direction = direction
 
 ##returns the best name that matches the dictionary for the ingredient. Used to categorize ingredients
 def ingredienttodict(name):
@@ -117,8 +121,8 @@ def translatetrans(original, trans):
        return None   
    elif type(trans) == int or type(trans) == float:
         return scale(original, trans)
-   elif trans == 'mexherbs' or trans == 'mexspices':
-       return mextrans(original, trans)
+   #elif trans == 'mexherbs' or trans == 'mexspices':
+    #   return mextrans(original, trans)
    elif type(trans)== str and trans.startswith('+') or trans.endswith('+'):
        return appenddescriptors(original, trans)
    elif trans == 'remove': 
@@ -128,15 +132,22 @@ def translatetrans(original, trans):
         return switchingredients(original,trans)
 
 def switchingredients(original, trans):
-    newfull = None
-    if original["quantity"] and original["unit"]:
-        newfull = " ".join([original["quantity"], original["unit"], trans])
-    elif original['quantity']:
-        newfull = " ".join([original["quantity"], trans])
-    else: newfull = trans
-    original['name'] = trans
-    original['original'] = newfull
-    original['description'] = 'None'
+    global translatedingredients
+    oldingredient = original['name']
+    if trans == 'mexherbs' or trans == 'mexspices':
+       original = mextrans(original, trans)
+       trans = original['name']
+    else:
+        newfull = None
+        if original["quantity"] and original["unit"]:
+            newfull = " ".join([original["quantity"], original["unit"], trans])
+        elif original['quantity']:
+            newfull = " ".join([original["quantity"], trans])
+        else: newfull = trans
+        original['name'] = trans
+        original['original'] = newfull
+        original['description'] = 'None'
+    translatedingredients[oldingredient] = trans
     return original
 
 def appenddescriptors(original, trans):
@@ -175,7 +186,6 @@ def scale(original, trans):
             original['unit'] = original['unit'] + 's'
     original['original'] = original['original'].replace(oldquantitystr, original['quantity'])
     return original
-
 
 def mextrans(original, trans):
     global translatedingredients
@@ -228,7 +238,7 @@ if __name__ == '__main__':
     ingredent = "campbell's condensed french onion soup"
     direction = "Stir in the onion soup"
     match = process.extractOne(ingredent, direction.split())
-    name= ingredienttodict('shrimp')
+    name= ingredienttodict('frozen cooked shrimp without tails')
     print(name)
     print(dicttotrans(name, 5))
     #print(match)

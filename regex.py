@@ -46,7 +46,8 @@ cooking_actions = [
     "stew", "smoke", "deep fried",
     "broil", "fried", "cook",
     "melt", "drain", "stir",
-    "whisk", "chop", "marinate"
+    "whisk", "chop", "marinate", 
+    "soak", "mix", "season"
     ]
 
 cook = re.compile("|".join(r"\b{}i?e?d?\b".format(c) for c in cooking_actions), re.I)
@@ -58,7 +59,8 @@ cooking_tools = [
     "whisk", "oven", "griddle",
     "pressure cooker", "frying pan",
     "stir", "dish", "plate",
-    "saucepan"
+    "saucepan", "slow cooker", "mixer", "blender",
+    "spoon", "grill", "food processor"
     ]
 
 tools = re.compile("|".join(r"\b{}\b".format(t) for t in cooking_tools), re.I)
