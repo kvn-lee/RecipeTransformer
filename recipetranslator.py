@@ -7,9 +7,11 @@ from fractions import Fraction
 from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
 import copy
+import main
 
 
 addspecialsteps = []
+mexicaningredients = []
 choices = list(fooddict.master_dict)
 translatedingredients = {} # list of the dictionaries fro the included ingredients
 #lstIncIngNames = list() # list of the ingredient names in the recipe after translation
@@ -18,7 +20,11 @@ def maintransformation(recipe, trans):
     global translatedingredients
     translatedingredients.clear()
     recipe.ingredient_components = translate_ingredients(recipe.ingredient_components, trans)
+    if trans == 7:
+        recipe.ingredient_components = add_mexican_ingredient(recipe.ingredient_components)
     recipe.direction_components = translate_instructions(recipe.direction_components, translatedingredients, copy.deepcopy(recipe.direction_components))    
+    if trans == 7:
+        recipe.direction_components = add_mexican_direction(recipe.direction_components)
     recipe.title = translate_title(recipe.title, translatedingredients)
     return recipe
 
@@ -94,7 +100,9 @@ def addunits(old, new):
     elif old['quantity'] == None:
         old['quantity'] = new['quantity']
         old['unit'] = new['unit']
-    elif new['quantity'] == None:
+    elif old["unit"] == None:
+        old["unit"] = new["unit"]
+    elif new['quantity'] == None or new["unit"] == None:
         pass
     else:
         oldquantitystr = str(old['quantity'])
@@ -295,6 +303,28 @@ def mextrans(original, trans):
     original['original'] = newfull
     #translatedingredients[original['name']]= replacement['name']
     return original
-        
-lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder", "oregano", "cilantro", "epazote", "garlic"]
 
+
+def add_mexican_ingredient(ing_components):
+    jalapeno_ing = {}
+    jalapeno_ing["original"] = "1 cup diced jalapeños"
+    jalapeno_ing["name"] = "jalapenos"
+    jalapeno_ing["quantity"] = "1"
+    jalapeno_ing["unit"] = "cup"
+    jalapeno_ing["description"] = "diced"
+    jalapeno_ing["prep"] = None
+    ing_components.append(jalapeno_ing)
+    return ing_components
+
+
+def add_mexican_direction(dir_components):
+    jalapeno_dir = {}
+    jalapeno_dir["direction"] = "Add diced jalapeños"
+    jalapeno_dir["ingredients"] = ["jalapeño"]
+    jalapeno_dir["methods"] = []
+    jalapeno_dir["tools"] = []
+    jalapeno_dir["time"] = []
+    dir_components.append(jalapeno_dir)
+    return dir_components
+
+lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder", "oregano", "cilantro", "epazote", "garlic"]
