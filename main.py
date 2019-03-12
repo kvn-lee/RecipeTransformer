@@ -18,31 +18,37 @@ def main():
     while "allrecipes.com/recipe" not in url:
         url = input("\nPlease enter a valid recipe URL from allrecipes.com: ")
 
-    # RETURN ORIGINAL RECIPE #
-    recipe = rparser.parse_recipe(url)
-    output_recipe(recipe)
+        # RETURN ORIGINAL RECIPE #
+        recipe = rparser.parse_recipe(url)
+        output_recipe(recipe)
 
 
-    # ASK HOW TO CHANGE RECIPE #
-    transformation = 0
-    toTransform = True
-    while toTransform:
-        while int(transformation) not in range(1, 9):
-            transformation = input(prompt)
-
-        # TRANSFORM RECIPE #
-        newrecipe = recipetranslator.maintransformation(copy.deepcopy(recipe), int(transformation))
-
-        # OUTPUT THE NEW RECIPE POST TRANSFORMATION #
-        output_recipe(newrecipe)
-
-        # RESET TRANSFORMATION TO 0 TO REPEAT PROCESS #
+        # ASK HOW TO CHANGE RECIPE #
         transformation = 0
-        toStop = 0
-        while int(toStop) not in range(1, 3):
-            toStop = input('Enter 1 to transform again, 2 to stop: ')
-        if int(toStop) == 2:
-            toTransform = False
+        toTransform = True
+        while toTransform:
+            while int(transformation) not in range(1, 9):
+                transformation = input(prompt)
+
+            # TRANSFORM RECIPE #
+            newrecipe = recipetranslator.maintransformation(copy.deepcopy(recipe), int(transformation))
+
+            # OUTPUT THE NEW RECIPE POST TRANSFORMATION #
+            output_recipe(newrecipe)
+
+            # RESET TRANSFORMATION TO 0 TO REPEAT PROCESS #
+            transformation = 0
+            toStop = 0
+            while int(toStop) not in range(1, 4):
+                toStop = input('\nRecipe transformed! Would you like to try again? Please enter a number'
+                               '\n1: Transform the same recipe'
+                               '\n2: Transform a different recipe'
+                               '\n3: Exit\n')
+                if int(toStop) == 2:
+                    url=""
+                    toTransform = False
+                elif int(toStop) == 3:
+                    toTransform = False
 
 
 def output_recipe(rec):
