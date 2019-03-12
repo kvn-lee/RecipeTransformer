@@ -103,9 +103,7 @@ def addunits(old, new):
     elif old['quantity'] == None:
         old['quantity'] = new['quantity']
         old['unit'] = new['unit']
-    elif old["unit"] == None:
-        old["unit"] = new["unit"]
-    elif new['quantity'] == None or new["unit"] == None:
+    elif new['quantity'] == None:
         pass
     else:
         oldquantitystr = str(old['quantity'])
@@ -113,17 +111,23 @@ def addunits(old, new):
         if len(oldquantitystr) == 1:
             oldquantity = convert_to_decimal(oldquantitystr[0])
             newquantitystr = new['quantity']
-            newquantity = convert_to_decimal(newquantitystr)        
-            if new['unit'].rstrip('s') == old['unit'].rstrip('s'):
-                old['quantity'] = newquantity + oldquantity
-                old['original'] = old['original'].replace(oldquantitystr[0], str(old['quantity']))
-            else: 
+            newquantity = convert_to_decimal(newquantitystr)
+            if new['unit'] == None or old['unit'] == None:
                 if new['unit'] == None: new['unit'] = ''
                 if old['unit'] == None: old['unit'] = ''    
                 old['quantity'] = str(oldquantity) + str(newquantity)
                 old['unit'] = old['unit'] + ' ' + new['unit']
                 newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
                 old['original'] = old['original'].replace(oldquantitystr[0], newunitmeasurement)
+            else:
+                if new['unit'].rstrip('s') == old['unit'].rstrip('s'):
+                    old['quantity'] = newquantity + oldquantity
+                    old['original'] = old['original'].replace(oldquantitystr[0], str(old['quantity']))
+                else:    
+                    old['quantity'] = str(oldquantity) +  ' ' + str(newquantity)
+                    old['unit'] = old['unit'] + ' ' + new['unit']
+                    newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
+                    old['original'] = old['original'].replace(oldquantitystr[0], newunitmeasurement)
     return old
 
 
