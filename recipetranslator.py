@@ -33,6 +33,7 @@ def translate_instructions(direction_comp, transingredients, new_direction_comp)
                 ingredient_match = process.extractOne(ing, potentials.split())
                 component = direction_comp[idx]
                 new_direction = component["direction"].replace(ingredient_match[0], transingredients[ing])
+                new_direction = re.sub(r'\b(.+)\s+\1\b', r'\1', new_direction)
                 component["direction"] = new_direction                
                 for i in range (len(directioning)):
                     if directioning[i] == ing:
