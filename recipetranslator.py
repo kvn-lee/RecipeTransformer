@@ -67,6 +67,8 @@ def translate_ingredients(ingredient_comp, trans):
         #if no translation append old ingredient object ot new ingredient list
         if translation == None: 
             #check if a transformation caused a duplicate ingredient, if so change amount of previous instead of adding
+            check_for_dups(bestmatch, ingredient, lstIncIngNames, newingredientlst)
+            '''
             if bestmatch not in lstIncIngNames:
                 lstIncIngNames.append(bestmatch)
                 newingredientlst.append(ingredient)
@@ -74,12 +76,15 @@ def translate_ingredients(ingredient_comp, trans):
                 i = lstIncIngNames.index(bestmatch)
                 oldinstance = newingredientlst[i]
                 newingredientlst[i] = addunits(oldinstance, ingredient)
+            '''
         elif type(translation) == list:
             #not checking if already on list because we want to preferably keep it separate
             for replace in translation:
                 lstIncIngNames.append(replace['name'])
                 newingredientlst.append(replace)
         elif not translation == 'remove': 
+            check_for_dups(translation['name'], ingredient, lstIncIngNames, newingredientlst)
+            '''
             if translation['name'] not in lstIncIngNames:
                 lstIncIngNames.append(translation['name'])
                 newingredientlst.append(ingredient)
@@ -87,17 +92,25 @@ def translate_ingredients(ingredient_comp, trans):
                 i = lstIncIngNames.index(translation['name'])
                 oldinstance = newingredientlst[i]
                 newingredientlst[i] = addunits(oldinstance, ingredient)
+            '''
+        
     print('included ingredients')
     print(lstIncIngNames)
     return newingredientlst
 
-#def check_for_dups(newing, pastingnames, inglst):
-
+def check_for_dups(newingname, fullingredient, pastingnames, inglst):
+    if newingname not in pastingnames:
+        pastingnames.append(newingname)
+        inglst.append(fullingredient)
+    else:
+        i = pastingnames.index(newingname)
+        oldinstance = inglst[i]
+        inglst[i] = addunits(oldinstance, fullingredient)
 
 
 def addunits(old, new):
     if old['quantity'] == None and new['quantity'] == None:
-        pass
+        old['quantity'] == None
     elif old['quantity'] == None:
         old['quantity'] = new['quantity']
         old['unit'] = new['unit']
@@ -109,7 +122,7 @@ def addunits(old, new):
         newquantitystr = new['quantity']
         newquantity = convert_to_decimal(newquantitystr)
         
-        if new['unit'] == old['unit']:
+        if new['unit'].rstrip('s') == old['unit'].rstrip('s'):
             old['quantity'] = newquantity + oldquantity
             old['original'] = old['original'].replace(oldquantitystr, str(old['quantity']))
         else: 
