@@ -31,7 +31,7 @@ def main():
             transformation = input(prompt)
 
         # TRANSFORM RECIPE #
-        newrecipe = translator.maintransformation(copy.deepcopy(recipe), int(transformation))
+        newrecipe = recipetranslator.maintransformation(copy.deepcopy(recipe), int(transformation))
 
         # OUTPUT THE NEW RECIPE POST TRANSFORMATION #
         output_recipe(newrecipe)

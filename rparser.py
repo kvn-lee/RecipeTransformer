@@ -48,9 +48,9 @@ def get_ingredient_components(ingredients):
             ingredients.append(other)
         original_ingredient = ingredient
         ingredient = re.sub(r'\([^)]*\)', '', ingredient)
-        quantity = next(iter(regex.num.findall(ingredient)), None)
-        unit = next(iter(regex.units.findall(ingredient)), None)
-        preparation = next(iter(regex.prep.findall(ingredient)), None)
+        quantity = next(iter(reciperegex.num.findall(ingredient)), None)
+        unit = next(iter(reciperegex.units.findall(ingredient)), None)
+        preparation = next(iter(reciperegex.prep.findall(ingredient)), None)
 
         ing_name = ""
         if quantity is None:
@@ -72,7 +72,7 @@ def get_ingredient_components(ingredients):
         ing_name = ing_name.replace(" to taste", "")
         ing_name, sep, description = ing_name.partition(",")
 
-        additional_prep = next(iter(regex.prep.findall(ing_name)), None)
+        additional_prep = next(iter(reciperegex.prep.findall(ing_name)), None)
         if additional_prep:
             ing_name = ing_name.replace(additional_prep, "")
             ing_name = ing_name.strip()
@@ -111,21 +111,21 @@ def get_direction_components(directions, ingredients):
         tools = []
         dir_ingredients = []
 
-        duration = regex.time.findall(dir)
+        duration = reciperegex.time.findall(dir)
         if duration:
             if isinstance(duration, list):
                 time.extend(duration)
             else:
                 time.append(duration)
 
-        cooking_methods = regex.cook.findall(dir)
+        cooking_methods = reciperegex.cook.findall(dir)
         if cooking_methods:
             if isinstance(cooking_methods, list):
                 methods.extend(cooking_methods)
             else:
                 methods.append(cooking_methods)
 
-        cooking_tools = regex.tools.findall(dir)
+        cooking_tools = reciperegex.tools.findall(dir)
         if cooking_tools:
             if isinstance(cooking_tools, list):
                 tools.extend(cooking_tools)
@@ -160,7 +160,7 @@ def get_direction_components(directions, ingredients):
 
 def parse_cooking_method(title, directions):
     potential_methods = {}
-    title_cooking_method = next(iter(regex.cook.findall(title)), None)
+    title_cooking_method = next(iter(reciperegex.cook.findall(title)), None)
 
     if title_cooking_method:
         if title_cooking_method.endswith("ed"):
@@ -174,7 +174,7 @@ def parse_cooking_method(title, directions):
             return title_cooking_method
 
     for idx, step in enumerate(directions):
-        cooking_methods = regex.cook.findall(step)
+        cooking_methods = reciperegex.cook.findall(step)
         if cooking_methods:
             for method in cooking_methods:
                 potential_methods[method] = idx
