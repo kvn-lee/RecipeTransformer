@@ -55,9 +55,9 @@ def output_recipe(rec):
     detailed_recipe = ""
     while detailed_recipe not in ("y", "n", "Y", "N"):
         detailed_recipe = input("View detailed recipe? (y/n): ")
-    if detailed_recipe is "y" or "Y":
+    if detailed_recipe is "y" or detailed_recipe is "Y":
         detailed = True
-    elif detailed_recipe is "n" or "N":
+    elif detailed_recipe is "n" or detailed_recipe is "N":
         detailed = False
 
     if detailed:
