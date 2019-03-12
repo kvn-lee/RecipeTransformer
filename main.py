@@ -46,7 +46,9 @@ def main():
 
 
 def output_recipe(rec):
-    detailed_recipe = input("View detailed recipe? (y/n): ")
+    detailed_recipe = ""
+    while detailed_recipe not in ("y", "n", "Y", "N"):
+        detailed_recipe = input("View detailed recipe? (y/n): ")
     if detailed_recipe is "y":
         detailed = True
     elif detailed_recipe is "n":
