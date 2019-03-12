@@ -106,19 +106,21 @@ def addunits(old, new):
         pass
     else:
         oldquantitystr = str(old['quantity'])
-        oldquantity = convert_to_decimal(oldquantitystr)
-        newquantitystr = new['quantity']
-        newquantity = convert_to_decimal(newquantitystr)        
-        if new['unit'].rstrip('s') == old['unit'].rstrip('s'):
-            old['quantity'] = newquantity + oldquantity
-            old['original'] = old['original'].replace(oldquantitystr, str(old['quantity']))
-        else: 
-            if new['unit'] == None: new['unit'] = ''
-            if old['unit'] == None: old['unit'] = ''    
-            old['quantity'] = str(oldquantity) + str(newquantity)
-            old['unit'] = old['unit'] + ' ' + new['unit']
-            newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
-            old['original'] = old['original'].replace(oldquantitystr, newunitmeasurement)
+        oldquantitystr = oldquantitystr.split()
+        if len(oldquantitystr) == 1:
+            oldquantity = convert_to_decimal(oldquantitystr[0])
+            newquantitystr = new['quantity']
+            newquantity = convert_to_decimal(newquantitystr)        
+            if new['unit'].rstrip('s') == old['unit'].rstrip('s'):
+                old['quantity'] = newquantity + oldquantity
+                old['original'] = old['original'].replace(oldquantitystr[0], str(old['quantity']))
+            else: 
+                if new['unit'] == None: new['unit'] = ''
+                if old['unit'] == None: old['unit'] = ''    
+                old['quantity'] = str(oldquantity) + str(newquantity)
+                old['unit'] = old['unit'] + ' ' + new['unit']
+                newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
+                old['original'] = old['original'].replace(oldquantitystr[0], newunitmeasurement)
     return old
 
 
