@@ -76,6 +76,9 @@ def get_ingredient_components(ingredients):
         if additional_prep:
             ing_name = ing_name.replace(additional_prep, "")
             ing_name = ing_name.strip()
+        
+        if ing_name.endswith("s"):
+            ing_name = ing_name.replace("s", "")
 
         description = description.strip()
         if preparation is not None and additional_prep is not None and description == "":

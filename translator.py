@@ -1,5 +1,6 @@
 import fooddict
 import transformationdict
+import specialtransformations
 import math
 import re
 from fractions import Fraction
@@ -56,7 +57,7 @@ def translate_ingredients(ingredient_comp, trans):
     for ingredient in ingredient_comp:
         bestmatch = find_match_in_fooddict(ingredient['name']) #find best match in food dict, return name of best match
         transingredient = return_trans_in_transformationdict(bestmatch, trans) #find right transformation for the best match and transformation wanted
-        translation = preform_ingredient_trans(ingredient, transingredient) #return new ingredient object, None, or 'remove'
+        translation = preform_ingredient_trans(ingredient, transingredient) #return new ingredient object, list of them,  None, or 'remove'
         #if no translation append old ingredient object ot new ingredient list
         if translation == None: 
             #check if a transformation caused a duplicate ingredient, if so change amount of previous instead of adding
@@ -67,6 +68,11 @@ def translate_ingredients(ingredient_comp, trans):
                 i = lstIncIngNames.index(bestmatch)
                 oldinstance = newingredientlst[i]
                 newingredientlst[i] = addunits(oldinstance, ingredient)
+        elif type(translation) == list:
+            #not checking if already on list because we want to preferably keep it separate
+            for replace in translation:
+                lstIncIngNames.append(replace['name'])
+                newingredientlst.append(replace)
         elif not translation == 'remove': 
             if translation['name'] not in lstIncIngNames:
                 lstIncIngNames.append(translation['name'])
@@ -78,6 +84,8 @@ def translate_ingredients(ingredient_comp, trans):
     print('included ingredients')
     print(lstIncIngNames)
     return newingredientlst
+
+
 
 def addunits(old, new):
     oldquantitystr = str(old['quantity'])
@@ -166,9 +174,30 @@ def preform_ingredient_trans(original, trans):
        return appenddescriptors(original, trans)
    elif trans == 'remove': 
        return 'remove'
+   elif trans in specialtransformations.specialtrans:
+       #print hi
+        return special_ingredient_transform(original, trans)
    else:
        #transinstructions[trans]        
         return switchingredients(original,trans)
+
+def special_ingredient_transform(original, trans):
+    transsteps = specialtransformations.specialtrans[trans]
+    replacementingredients = transsteps.ingredients
+    lstnewingredients = []
+    sub = ''
+    for ele in replacementingredients:
+        newingredient = copy.deepcopy(original)
+        newingredient['name'] = ele.name
+        newingredient['unit'] = ele.unit
+        newingredient['quantity'] = convert_to_decimal(str(ele.measurement)) * convert_to_decimal(str(original['quantity']))
+        newingredient['original'] = str(newingredient['quantity']) + ' ' + ele.unit + ' ' + ele.name
+        sub = sub + ' ' + ele.name
+        lstnewingredients.append(newingredient)
+    sub = sub + ' mixture'
+    translatedingredients[original['name']] = sub.strip()
+    return lstnewingredients
+
 
 def switchingredients(original, trans):
     global translatedingredients
@@ -255,10 +284,11 @@ if __name__ == '__main__':
     # print(test)
     # print(fooddict.master_dict[test])
     # print(return_trans_in_transformationdict(test, "toVegetarian"))
-    ingredent = "campbell's condensed french onion soup"
-    direction = "Stir in the onion soup"
-    match = process.extractOne(ingredent, direction.split())
-    name= find_match_in_fooddict('frozen cooked shrimp without tails')
+    #ngredent = "campbell's condensed french onion soup"
+    #direction = "Stir in the onion soup"
+    #match = process.extractOne(ingredent, direction.split())
+    name= find_match_in_fooddict('eggs')
     print(name)
+    print()
     print(return_trans_in_transformationdict(name, 5))
     #print(match)
