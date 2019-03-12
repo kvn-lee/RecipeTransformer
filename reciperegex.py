@@ -70,7 +70,3 @@ tools = re.compile("|".join(r"\b{}\b".format(t) for t in cooking_tools), re.I)
 # regex for time and time unit
 time = re.compile(r"\d*[.,]?\d* minu?t?e?s?|\d*[.,]?\d* hours?|\d*[.,]?\d* seconds?")
 
-
-if __name__ == '__main__':
-    a = time.findall("2 hours")
-    b = 1

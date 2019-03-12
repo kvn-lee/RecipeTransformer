@@ -67,35 +67,15 @@ def translate_ingredients(ingredient_comp, trans):
         #if no translation append old ingredient object ot new ingredient list
         if translation == None: 
             #check if a transformation caused a duplicate ingredient, if so change amount of previous instead of adding
+            #updates newingredientlst and lstIncIngNames by pointers
             check_for_dups(bestmatch, ingredient, lstIncIngNames, newingredientlst)
-            '''
-            if bestmatch not in lstIncIngNames:
-                lstIncIngNames.append(bestmatch)
-                newingredientlst.append(ingredient)
-            else:
-                i = lstIncIngNames.index(bestmatch)
-                oldinstance = newingredientlst[i]
-                newingredientlst[i] = addunits(oldinstance, ingredient)
-            '''
         elif type(translation) == list:
-            #not checking if already on list because we want to preferably keep it separate
+            #not checking if already on list because we want to preferably keep it separate, might not be possible
             for replace in translation:
                 lstIncIngNames.append(replace['name'])
                 newingredientlst.append(replace)
         elif not translation == 'remove': 
             check_for_dups(translation['name'], ingredient, lstIncIngNames, newingredientlst)
-            '''
-            if translation['name'] not in lstIncIngNames:
-                lstIncIngNames.append(translation['name'])
-                newingredientlst.append(ingredient)
-            else:
-                i = lstIncIngNames.index(translation['name'])
-                oldinstance = newingredientlst[i]
-                newingredientlst[i] = addunits(oldinstance, ingredient)
-            '''
-        
-    print('included ingredients')
-    print(lstIncIngNames)
     return newingredientlst
 
 def check_for_dups(newingname, fullingredient, pastingnames, inglst):
@@ -120,8 +100,7 @@ def addunits(old, new):
         oldquantitystr = str(old['quantity'])
         oldquantity = convert_to_decimal(oldquantitystr)
         newquantitystr = new['quantity']
-        newquantity = convert_to_decimal(newquantitystr)
-        
+        newquantity = convert_to_decimal(newquantitystr)        
         if new['unit'].rstrip('s') == old['unit'].rstrip('s'):
             old['quantity'] = newquantity + oldquantity
             old['original'] = old['original'].replace(oldquantitystr, str(old['quantity']))
@@ -319,18 +298,3 @@ def mextrans(original, trans):
         
 lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder", "oregano", "cilantro", "epazote", "garlic"]
 
-
-
-if __name__ == '__main__':
-    # test = find_match_in_fooddict("chicken broth")
-    # print(test)
-    # print(fooddict.master_dict[test])
-    # print(return_trans_in_transformationdict(test, "toVegetarian"))
-    #ngredent = "campbell's condensed french onion soup"
-    #direction = "Stir in the onion soup"
-    #match = process.extractOne(ingredent, direction.split())
-    name= find_match_in_fooddict('eggs')
-    print(name)
-    print()
-    print(return_trans_in_transformationdict(name, 5))
-    #print(match)

@@ -190,13 +190,10 @@ def parse_cooking_method(title, directions):
 def parse_recipe(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
-
     title = soup.find(id="recipe-main-content").get_text()
     print("Parsing the directions necessary for", title, "\n")
-
     ingredients = parse_ingredients(soup)
     directions = parse_directions(soup)
-
     ingredient_components = get_ingredient_components(ingredients)
     ing_names = [d['name'] for d in ingredient_components if 'name' in d]
     direction_components = get_direction_components(directions, ing_names)
@@ -207,8 +204,3 @@ def parse_recipe(url):
 
     return Recipe(title, ingredients, ingredient_components, directions, direction_components, tools, main_cooking_method)
 
-
-if __name__ == "__main__":
-    b = get_ingredient_components(["1 pound andouille sausage, sliced"])
-    #title, ing, ing_c, directions, dir_c, main_method = parse_recipe("https://www.allrecipes.com/recipe/12719")
-    a = 1
