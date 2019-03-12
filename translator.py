@@ -8,6 +8,8 @@ from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
 import copy
 
+
+addspecialsteps = []
 choices = list(fooddict.master_dict)
 translatedingredients = {} # list of the dictionaries fro the included ingredients
 #lstIncIngNames = list() # list of the ingredient names in the recipe after translation
@@ -37,6 +39,9 @@ def translate_instructions(direction_comp, transingredients, new_direction_comp)
                         directioning[i] = transingredients[ing]
                 component['ingredients'] = directioning
                 new_direction_comp[idx] = component
+    if addspecialsteps:
+        addspecialsteps.extend(new_direction_comp)
+        new_direction_comp = addspecialsteps
     return new_direction_comp
 
 def translate_title(title, translatedingredients):
@@ -185,7 +190,10 @@ def special_ingredient_transform(original, trans):
     transsteps = specialtransformations.specialtrans[trans]
     replacementingredients = transsteps.ingredients
     lstnewingredients = []
+    global translatedingredients
+    global addspecialsteps
     sub = ''
+    ing = []
     for ele in replacementingredients:
         newingredient = copy.deepcopy(original)
         newingredient['name'] = ele.name
@@ -193,9 +201,17 @@ def special_ingredient_transform(original, trans):
         newingredient['quantity'] = convert_to_decimal(str(ele.measurement)) * convert_to_decimal(str(original['quantity']))
         newingredient['original'] = str(newingredient['quantity']) + ' ' + ele.unit + ' ' + ele.name
         sub = sub + ' ' + ele.name
+        ing.append(ele.name)
         lstnewingredients.append(newingredient)
     sub = sub + ' mixture'
     translatedingredients[original['name']] = sub.strip()
+    newdirection = {}
+    newdirection['ingredients'] = ing
+    newdirection['methods'] = ['mix']
+    newdirection['time'] = None
+    newdirection['tools'] = ''
+    newdirection['direction'] = transsteps.addsteps
+    addspecialsteps.append(newdirection)
     return lstnewingredients
 
 
