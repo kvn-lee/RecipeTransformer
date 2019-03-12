@@ -91,25 +91,37 @@ def translate_ingredients(ingredient_comp, trans):
     print(lstIncIngNames)
     return newingredientlst
 
+#def check_for_dups(newing, pastingnames, inglst):
+
 
 
 def addunits(old, new):
-    oldquantitystr = str(old['quantity'])
-    oldquantity = convert_to_decimal(oldquantitystr)
-    newquantitystr = new['quantity']
-    newquantity = convert_to_decimal(newquantitystr)
-    
-    if new['unit'] == old['unit']:
-        old['quantity'] = newquantity + oldquantity
-        old['original'] = old['original'].replace(oldquantitystr, str(old['quantity']))
-    else: 
-        if new['unit'] == None: new['unit'] = ''
-        if old['unit'] == None: old['unit'] = ''    
-        old['quantity'] = str(oldquantity) + str(newquantity)
-        old['unit'] = old['unit'] + ' ' + new['unit']
-        newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
-        old['original'] = old['original'].replace(oldquantitystr, newunitmeasurement)
+    if old['quantity'] == None and new['quantity'] == None:
+        pass
+    elif old['quantity'] == None:
+        old['quantity'] = new['quantity']
+        old['unit'] = new['unit']
+    elif new['quantity'] == None:
+        pass
+    else:
+        oldquantitystr = str(old['quantity'])
+        oldquantity = convert_to_decimal(oldquantitystr)
+        newquantitystr = new['quantity']
+        newquantity = convert_to_decimal(newquantitystr)
+        
+        if new['unit'] == old['unit']:
+            old['quantity'] = newquantity + oldquantity
+            old['original'] = old['original'].replace(oldquantitystr, str(old['quantity']))
+        else: 
+            if new['unit'] == None: new['unit'] = ''
+            if old['unit'] == None: old['unit'] = ''    
+            old['quantity'] = str(oldquantity) + str(newquantity)
+            old['unit'] = old['unit'] + ' ' + new['unit']
+            newunitmeasurement = str(oldquantity) + ' ' + old['unit'] + ' and ' + str(newquantity) + ' ' + new['unit']
+            old['original'] = old['original'].replace(oldquantitystr, newunitmeasurement)
     return old
+
+
 
 def convert_to_decimal(strnum):
     if '/' in strnum:
