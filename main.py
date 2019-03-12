@@ -1,5 +1,5 @@
 import rparser
-import translator
+import recipetranslator
 import copy
 
 prompt = ("Please enter a number for how to change your recipe:"
