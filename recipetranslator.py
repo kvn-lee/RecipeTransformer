@@ -7,7 +7,6 @@ from fractions import Fraction
 from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
 import copy
-import main
 
 
 addspecialsteps = []
@@ -22,9 +21,13 @@ def maintransformation(recipe, trans):
     recipe.ingredient_components = translate_ingredients(recipe.ingredient_components, trans)
     if trans == 7:
         recipe.ingredient_components = add_mexican_ingredient(recipe.ingredient_components)
-    recipe.direction_components = translate_instructions(recipe.direction_components, translatedingredients, copy.deepcopy(recipe.direction_components))    
+    if trans == 2 or trans == 6:
+        recipe.ingredient_components = add_candy_bacon_ingredient(recipe.ingredient_components)
+    recipe.direction_components = translate_instructions(recipe.direction_components, translatedingredients, copy.deepcopy(recipe.direction_components))
     if trans == 7:
         recipe.direction_components = add_mexican_direction(recipe.direction_components)
+    if trans == 2 or trans == 6:
+        recipe.direction_components = add_candy_bacon_direction(recipe.direction_components)
     recipe.title = translate_title(recipe.title, translatedingredients)
     return recipe
 
@@ -327,6 +330,29 @@ def add_mexican_direction(dir_components):
     jalapeno_dir["tools"] = []
     jalapeno_dir["time"] = []
     dir_components.append(jalapeno_dir)
+    return dir_components
+
+
+def add_candy_bacon_ingredient(ing_components):
+    candy_bacon_ing = {}
+    candy_bacon_ing["original"] = "1 cup diced candy bacon"
+    candy_bacon_ing["name"] = "candy bacon"
+    candy_bacon_ing["quantity"] = "1"
+    candy_bacon_ing["unit"] = "cup"
+    candy_bacon_ing["description"] = "diced"
+    candy_bacon_ing["prep"] = None
+    ing_components.append(candy_bacon_ing)
+    return ing_components
+
+
+def add_candy_bacon_direction(dir_components):
+    candy_bacon_dir = {}
+    candy_bacon_dir["direction"] = "Add diced candy bacon"
+    candy_bacon_dir["ingredients"] = ["candy bacon"]
+    candy_bacon_dir["methods"] = []
+    candy_bacon_dir["tools"] = []
+    candy_bacon_dir["time"] = []
+    dir_components.append(candy_bacon_dir)
     return dir_components
 
 lstmexspices = ["cumin", "chile powder", "adobo seasoning", "chipotle chile powder", "oregano", "cilantro", "epazote", "garlic"]
